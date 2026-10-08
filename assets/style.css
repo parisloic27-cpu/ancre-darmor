@@ -1,0 +1,158 @@
+/* Ancre d'Armor — feuille de style commune */
+@font-face{font-family:'Dancing Script';font-weight:700;font-display:swap;src:url(/assets/fonts/dancing-script-latin-700-normal.woff2) format('woff2')}
+@font-face{font-family:Nunito;font-weight:300;font-display:swap;src:url(/assets/fonts/nunito-latin-300-normal.woff2) format('woff2')}
+@font-face{font-family:Nunito;font-weight:400;font-display:swap;src:url(/assets/fonts/nunito-latin-400-normal.woff2) format('woff2')}
+@font-face{font-family:Nunito;font-weight:600;font-display:swap;src:url(/assets/fonts/nunito-latin-600-normal.woff2) format('woff2')}
+
+:root{--bg:#f6f9fb;--soft:#5d7088;--ink:#23385a;--sand:#eaf1f6;--line:#dbe5ee;--btn:#2f5d8a;--btnink:#fff;--gold:#ffe9a8;--night:#16254a;--card:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121b2b;--soft:#a3b3c6;--ink:#e6eef6;--sand:#18253a;--line:#2b3a50;--btn:#8fb5d6;--btnink:#10203a;--card:#1b2940}}
+:root[data-theme="dark"]{--bg:#121b2b;--soft:#a3b3c6;--ink:#e6eef6;--sand:#18253a;--line:#2b3a50;--btn:#8fb5d6;--btnink:#10203a;--card:#1b2940}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:300 17px/1.65 Nunito,system-ui,sans-serif;padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--btn)}
+.skip{position:absolute;left:-999px;top:8px;background:#fff;color:#16254a;padding:8px 14px;border-radius:8px;z-index:20}
+.skip:focus{left:8px}
+.ic{width:1.1em;height:1.1em;vertical-align:-.15em;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- En-tête ---------- */
+.hero,.top{position:relative;overflow:hidden;color:#f2f5fb;background:linear-gradient(180deg,#16254a 0%,#2f3c78 62%,#4a5a92 100%);padding-top:env(safe-area-inset-top,0px)}
+.hero{min-height:600px}
+.top{padding-bottom:70px}
+.hero::before,.top::before{content:"";position:absolute;width:2px;height:2px;border-radius:50%;left:12%;top:22%;background:#fff;opacity:.8;box-shadow:140px 40px #fff,300px -6px #fff,520px 60px #fff,700px 10px #fff,880px 70px #fff,1040px 24px #fff,60px 120px #fff,420px 150px #fff}
+.bar{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:20px;max-width:1120px;margin:0 auto;padding:22px 24px}
+.logo{display:flex;align-items:center;gap:10px;font:700 1.9rem 'Dancing Script',cursive;color:inherit;text-decoration:none}
+.logo svg{width:30px;height:30px;fill:none;stroke:var(--gold);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.menu{display:flex;align-items:center;gap:26px}
+.menu a{position:relative;color:inherit;text-decoration:none;font-weight:400;font-size:1rem;padding:6px 0}
+.menu a::after{content:"";position:absolute;left:0;bottom:0;height:1.5px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
+.menu a:hover::after,.menu a:focus-visible::after,.menu a[aria-current]::after{transform:scaleX(1)}
+.menu a:focus-visible,.tog:focus-visible,.cta:focus-visible{outline:2px solid var(--gold);outline-offset:4px;border-radius:4px}
+.menu .shop{padding:8px 20px;border:1px solid rgba(255,255,255,.55);border-radius:999px}
+.menu .shop::after{display:none}
+.menu .shop:hover,.menu .shop[aria-current]{background:rgba(255,255,255,.12)}
+.tog{display:none;background:none;border:1px solid rgba(255,255,255,.55);color:inherit;border-radius:999px;padding:8px 18px;font:inherit;cursor:pointer}
+.sea{position:absolute;left:0;right:0;bottom:0;height:70px;z-index:2;width:100%}
+
+/* Accueil */
+.inner{position:relative;z-index:2;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center;max-width:1120px;margin:0 auto;padding:30px 24px 100px}
+h1{font:700 clamp(2.6rem,6.5vw,4.6rem)/1.1 'Dancing Script',cursive;margin:0 0 14px}
+.lead{font-size:1.2rem;max-width:42ch;margin:0 0 26px;opacity:.92}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.cta{display:inline-flex;align-items:center;gap:8px;padding:13px 26px;border-radius:999px;background:#f2f5fb;color:#18284a;text-decoration:none;font-weight:600}
+.cta.o{background:transparent;color:#f2f5fb;border:1.5px solid rgba(255,255,255,.6)}
+.scene{width:100%;max-width:420px;margin-left:auto;display:block;overflow:visible}
+.glowwrap{opacity:.15;animation:on 2.2s ease-out 1s forwards}
+@keyframes on{to{opacity:1}}
+.gl{transform-box:fill-box;transform-origin:center;transition:transform .5s ease;animation:pulse 5s ease-in-out 3s infinite alternate}
+@keyframes pulse{from{opacity:.65}to{opacity:1}}
+.hero:has(.menu a:hover) .gl,.hero:has(.menu a:focus-visible) .gl{transform:scale(1.4)}
+.b1,.b2{opacity:0}
+.b1{animation:l1 9s ease-in-out 3s infinite}.b2{animation:l2 9s ease-in-out 3s infinite}
+@keyframes l1{0%,5%{opacity:0}20%,40%{opacity:.55}55%,100%{opacity:0}}
+@keyframes l2{0%,50%{opacity:0}65%,85%{opacity:.55}100%{opacity:0}}
+.gull{position:absolute;z-index:1;top:19%;left:0;width:74px;pointer-events:none;animation:cross 28s linear 2s infinite;transform:translate(-140px,0)}
+@keyframes cross{0%{transform:translate(-140px,0)}12%{transform:translate(12vw,-16px)}26%{transform:translate(30vw,8px)}40%{transform:translate(52vw,-20px)}54%{transform:translate(76vw,4px)}68%,100%{transform:translate(112vw,-12px)}}
+.wl{transform-origin:40px 22px;animation:fl .7s ease-in-out infinite alternate}
+.wr{transform-origin:40px 22px;animation:fr .7s ease-in-out infinite alternate}
+@keyframes fl{from{transform:rotate(14deg)}to{transform:rotate(-20deg)}}
+@keyframes fr{from{transform:rotate(-14deg)}to{transform:rotate(20deg)}}
+
+/* Titre des pages intérieures */
+.ptitle{position:relative;z-index:2;max-width:1120px;margin:0 auto;padding:18px 24px 10px}
+.ptitle h1{font-size:clamp(2.4rem,5.5vw,3.6rem);margin:0 0 6px}
+.ptitle p{margin:0;max-width:56ch;opacity:.9;font-size:1.1rem}
+.crumb{font-size:.9rem;opacity:.8;margin-bottom:6px}
+.crumb a{color:inherit}
+
+/* ---------- Sections ---------- */
+.sec{padding:72px 24px}.sec.alt{background:var(--sand)}
+.sw{max-width:760px;margin:0 auto}
+.sw.wide{max-width:1080px}
+.sec h2{font:700 2.4rem/1.15 'Dancing Script',cursive;margin:0 0 .3em;display:flex;align-items:center;gap:12px}
+.sec h2 .ic{width:34px;height:34px;flex:none;stroke-width:1.3;color:var(--btn)}
+.sec h3{font-weight:600;font-size:1.2rem;margin:1.6em 0 .4em}
+.sub{font-weight:600;font-size:1.2rem;margin:0 0 1em}
+.sec p,.sec li{max-width:66ch}
+.sec p{margin:0 0 1em}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:999px;background:var(--btn);color:var(--btnink);text-decoration:none;font-weight:600;margin-top:8px;border:0;font:inherit;font-weight:600;cursor:pointer}
+.btn:focus-visible{outline:3px solid var(--btn);outline-offset:3px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.trio{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin:22px 0 0}
+.trio div{padding:22px;border-radius:16px;background:var(--bg);border:1px solid var(--line)}
+.trio .ic{display:block;width:30px;height:30px;margin-bottom:10px;color:var(--btn);stroke-width:1.3}
+.end{text-align:center;color:#f2f5fb;background:linear-gradient(180deg,#2f3c78,#16254a)}
+.end h2{justify-content:center}
+.end p{margin-inline:auto}
+.end .sub{font-weight:400}
+.end .btn{background:#f2f5fb;color:#18284a;margin:8px 5px 0}
+.end .btn.o{background:transparent;color:#f2f5fb;border:1.5px solid rgba(255,255,255,.6)}
+
+/* Cartes (guides, produits, histoires) */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:22px;margin-top:26px}
+.card{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.card .ph{aspect-ratio:4/3;background:linear-gradient(160deg,#2f3c78,#4a5a92);display:grid;place-items:center;color:var(--gold)}
+.card .ph svg{width:64px;height:64px;fill:none;stroke:currentColor;stroke-width:1.1;stroke-linecap:round;stroke-linejoin:round}
+.card .ph img{width:100%;height:100%;object-fit:cover}
+.card .bd{padding:20px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h3{margin:0;font-size:1.15rem}
+.card p{margin:0;font-size:.97rem;color:var(--soft)}
+.card .price{font-weight:600;font-size:1.15rem;color:var(--ink)}
+.card .tag{align-self:flex-start;font-size:.8rem;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--sand);color:var(--soft)}
+.card a.more{margin-top:auto;font-weight:600;text-decoration:none}
+.card form{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+label{font-weight:400;font-size:.95rem}
+input[type=text],input[type=email],select,textarea{width:100%;font:inherit;font-weight:400;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:150px;resize:vertical}
+input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--btn);outline-offset:1px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:.85rem;color:var(--soft)}
+.chk input{margin-top:4px;flex:none;accent-color:var(--btn)}
+.hint{font-size:.85rem;color:var(--soft)}
+.note{padding:16px 20px;border-radius:14px;background:var(--sand);border:1px solid var(--line);font-size:.95rem}
+.steps{counter-reset:s;list-style:none;padding:0;display:grid;gap:14px;margin:20px 0}
+.steps li{counter-increment:s;position:relative;padding-left:48px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:32px;height:32px;border-radius:50%;background:var(--btn);color:var(--btnink);display:grid;place-items:center;font-weight:600}
+
+/* Histoires */
+.story-meta{font-size:.95rem;opacity:.85}
+.story{font-size:1.08rem}
+.story p:first-of-type::first-letter{font:700 3.4em/.8 'Dancing Script',cursive;float:left;margin:.08em .12em 0 0;color:var(--btn)}
+.dept{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+.dept span{padding:6px 14px;border-radius:999px;border:1px solid var(--line);font-size:.9rem;background:var(--card)}
+.dept span.on{background:var(--btn);color:var(--btnink);border-color:var(--btn)}
+
+/* Légal */
+.legal h2{font:600 1.35rem/1.3 Nunito,sans-serif;margin:2em 0 .5em}
+.legal h2:first-child{margin-top:0}
+.todo{background:#fff3c4;color:#5b4500;padding:0 4px;border-radius:4px;font-weight:600}
+
+/* Pied de page */
+footer{background:var(--sand);border-top:1px solid var(--line);color:var(--soft);font-size:.92rem;padding:40px 24px 30px}
+.fw{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:30px}
+footer .flogo{font:700 1.7rem 'Dancing Script',cursive;color:var(--ink);margin:0 0 6px}
+footer h4{margin:0 0 10px;color:var(--ink);font-weight:600;font-size:.95rem}
+footer ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+footer a{color:inherit}
+footer .copy{max-width:1080px;margin:30px auto 0;padding-top:18px;border-top:1px solid var(--line);text-align:center;font-size:.85rem}
+
+@media (max-width:760px){
+.tog{display:block}
+.bar{flex-wrap:wrap}
+.menu{display:none;width:100%;flex-direction:column;align-items:flex-start;gap:14px;padding:10px 0 4px}
+.menu.open{display:flex}
+.inner{grid-template-columns:1fr;padding-top:10px}
+.scene{max-width:280px;margin:0 auto}
+.sec{padding:54px 16px}
+.bar,.ptitle,.inner{padding-left:16px;padding-right:16px}
+.sec h2{font-size:2rem}
+.fw{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}
+.glowwrap{animation:none;opacity:1}.gl,.b2{animation:none}.b1{animation:none;opacity:.5}
+.gull{animation:none;transform:translate(18vw,0)}.wl,.wr{animation:none}
+}
+.mt{margin-top:28px}
+.contact{display:grid;gap:14px}
+.hp{position:absolute;left:-9999px}

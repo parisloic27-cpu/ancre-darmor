@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /histoires/modele-histoire
+
+Sitemap: https://ancre-darmor.fr/sitemap.xml
