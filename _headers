@@ -5,5 +5,11 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; font-src 'self'; form-action 'self' https://www.paypal.com; frame-ancestors 'none'; base-uri 'self'
 
-/assets/*
+/assets/fonts/*
   Cache-Control: public, max-age=31536000, immutable
+
+/assets/*.css
+  Cache-Control: no-cache
+
+/assets/*.js
+  Cache-Control: no-cache
