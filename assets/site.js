@@ -29,6 +29,18 @@ document.addEventListener('DOMContentLoaded', function () {
   var field = document.getElementById('objet');
   if (obj && field) field.value = obj;
 
+  // Galerie produit : les miniatures changent l'image principale
+  document.querySelectorAll('.gal').forEach(function (g) {
+    var main = g.querySelector('.pimg'), img = main.querySelector('img');
+    g.querySelectorAll('.thumbs button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        img.src = b.dataset.src; img.alt = b.dataset.alt; main.href = b.dataset.big;
+        g.querySelectorAll('.thumbs button').forEach(function (x) { x.removeAttribute('aria-current'); });
+        b.setAttribute('aria-current', 'true');
+      });
+    });
+  });
+
   // Année du pied de page
   var y = document.getElementById('y');
   if (y) y.textContent = new Date().getFullYear();

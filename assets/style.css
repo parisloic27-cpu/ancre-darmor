@@ -190,3 +190,10 @@ html{scroll-behavior:auto}
 .perks{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:0 0 6px}
 .perks div{background:var(--card);font-size:.95rem;color:var(--soft)}
 .perks strong{display:block;color:var(--ink);font-weight:600;font-size:1rem;margin-bottom:2px}
+/* Galerie produit */
+.gal .thumbs{display:flex;gap:8px;padding:10px 12px 0;overflow-x:auto}
+.gal .thumbs button{flex:none;width:74px;aspect-ratio:3/2;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:var(--sand);cursor:pointer;opacity:.75;transition:opacity .2s,border-color .2s}
+.gal .thumbs button:hover{opacity:1}
+.gal .thumbs button[aria-current]{border-color:var(--btn);opacity:1}
+.gal .thumbs button:focus-visible{outline:2px solid var(--btn);outline-offset:2px}
+.gal .thumbs img{width:100%;height:100%;object-fit:cover}
