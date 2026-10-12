@@ -187,3 +187,6 @@ html{scroll-behavior:auto}
 .feats{margin:2px 0 4px;padding-left:1.1em;font-size:.93rem;color:var(--soft);display:grid;gap:3px}
 .feats li::marker{color:var(--btn)}
 .grid:has(> .card:nth-child(2):last-child){grid-template-columns:repeat(auto-fill,minmax(300px,480px));justify-content:center}
+.perks{grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:0 0 6px}
+.perks div{background:var(--card);font-size:.95rem;color:var(--soft)}
+.perks strong{display:block;color:var(--ink);font-weight:600;font-size:1rem;margin-bottom:2px}
