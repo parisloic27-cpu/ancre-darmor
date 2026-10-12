@@ -180,3 +180,10 @@ html{scroll-behavior:auto}
 .gull.small{width:52px;animation-duration:34s}
 @media (max-width:760px){.gull{width:56px;top:30%}.gull.g2{width:34px;top:40%}.gull.small{width:40px}}
 @media (prefers-reduced-motion:reduce){.gull,.gull .gb,.gull g{animation:none}.gull{transform:translate(14vw,0)}.gull.g2{display:none}}
+/* Produits avec photo */
+.card .ph.pimg{aspect-ratio:3/2;background:#e9e4dc;cursor:zoom-in}
+.card .ph.pimg img{transition:transform .5s ease}
+.card .ph.pimg:hover img{transform:scale(1.03)}
+.feats{margin:2px 0 4px;padding-left:1.1em;font-size:.93rem;color:var(--soft);display:grid;gap:3px}
+.feats li::marker{color:var(--btn)}
+.grid:has(> .card:nth-child(2):last-child){grid-template-columns:repeat(auto-fill,minmax(300px,480px));justify-content:center}
