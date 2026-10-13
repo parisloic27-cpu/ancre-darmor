@@ -25,8 +25,8 @@ Ensuite : commande passée à la main sur Gelato, ou envoi du PDF pour un guide.
 4. Ajouter l'adresse dans `sitemap.xml`.
 
 ## À compléter avant l'ouverture (surligné en jaune sur le site)
-- Mentions légales : nom, adresse, SIRET
-- CGV : régime de TVA, pays livrés, médiateur de la consommation
+- Mentions légales : réalisation du site (à confirmer)
+- CGV : médiateur de la consommation
 
 - Vrais guides, produits, prix et photos (dossier `images/`)
 
