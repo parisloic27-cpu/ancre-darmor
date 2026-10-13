@@ -310,3 +310,4 @@ form.contact{padding:30px 20px}
 /* cases à cocher : texte et lien sur une même ligne */
 .chk{display:block;position:relative;padding-left:26px}
 .chk input{position:absolute;left:0;top:3px;margin:0}
+.grid:has(> .card:only-child){grid-template-columns:minmax(0,520px);justify-content:center}
