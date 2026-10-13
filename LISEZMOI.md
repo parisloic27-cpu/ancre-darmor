@@ -25,10 +25,10 @@ Ensuite : commande passée à la main sur Gelato, ou envoi du PDF pour un guide.
 4. Ajouter l'adresse dans `sitemap.xml`.
 
 ## À compléter avant l'ouverture (surligné en jaune sur le site)
-- Mentions légales : réalisation du site (à confirmer)
+
 - CGV : médiateur de la consommation
 
 - Vrais guides, produits, prix et photos (dossier `images/`)
 
 ## Après une modification de `assets/style.css` ou `assets/site.js`
-Les pages appellent `style.css?v=12` : augmenter ce numéro dans toutes les pages (v=13, v=14…) force les téléphones à recharger le style.
+Les pages appellent `style.css?v=13` : augmenter ce numéro dans toutes les pages (v=14, v=15…) force les téléphones à recharger le style.

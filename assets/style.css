@@ -311,3 +311,7 @@ form.contact{padding:30px 20px}
 .chk{display:block;position:relative;padding-left:26px}
 .chk input{position:absolute;left:0;top:3px;margin:0}
 .grid:has(> .card:only-child){grid-template-columns:minmax(0,520px);justify-content:center}
+/* espacement régulier entre les blocs de la boutique et des guides */
+.sec .perks{margin-bottom:0}
+.sec .grid{margin-top:34px}
+.sec .note.mt{margin-top:34px}
