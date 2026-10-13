@@ -27,8 +27,8 @@ Ensuite : commande passée à la main sur Gelato, ou envoi du PDF pour un guide.
 ## À compléter avant l'ouverture (surligné en jaune sur le site)
 - Mentions légales : nom, adresse, SIRET
 - CGV : régime de TVA, pays livrés, médiateur de la consommation
-- Page « Mon histoire » : texte + photo
+
 - Vrais guides, produits, prix et photos (dossier `images/`)
 
 ## Après une modification de `assets/style.css` ou `assets/site.js`
-Les pages appellent `style.css?v=6` : augmenter ce numéro dans toutes les pages (v=7, v=8…) force les téléphones à recharger le style.
+Les pages appellent `style.css?v=7` : augmenter ce numéro dans toutes les pages (v=8, v=9…) force les téléphones à recharger le style.
