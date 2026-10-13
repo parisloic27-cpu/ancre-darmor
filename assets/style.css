@@ -209,3 +209,7 @@ html{scroll-behavior:auto}
 .ctas-l{display:flex;flex-wrap:wrap;gap:10px}
 .btn.o2{background:transparent;color:var(--btn);border:1.5px solid var(--btn)}
 @media (max-width:760px){.about{grid-template-columns:1fr;gap:28px}.about-ph{position:static;max-width:420px;margin:0 auto}}
+.specs{font-size:.92rem;border-top:1px solid var(--line);padding-top:8px}
+.specs summary{cursor:pointer;font-weight:600;color:var(--btn)}
+.specs ul{margin:8px 0 0;padding-left:1.1em;color:var(--soft);display:grid;gap:3px}
+.price small{font-weight:400;font-size:.85rem;color:var(--soft);margin-left:4px}
