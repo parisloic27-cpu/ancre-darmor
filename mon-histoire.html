@@ -21,7 +21,7 @@
 <link rel="icon" href="/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/dancing-script-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/style.css?v=8">
+<link rel="stylesheet" href="/assets/style.css?v=10">
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
@@ -46,21 +46,31 @@
 <div class="ptitle"><h1>Mon histoire</h1><p>Ce qui m'a donné envie de partager la Bretagne avec vous.</p></div>
 </header>
 <main id="contenu">
-<section class="sec"><div class="sw wide about">
-<figure class="about-ph"><picture><source srcset="/images/elisa.webp" type="image/webp"><img src="/images/elisa.jpg" width="900" height="1200" alt="Elisa, de dos, face à la mer depuis l'arrière d'un bateau"></picture></figure>
-<div class="about-txt">
+<section class="sec voyage"><div class="sw wide about">
+<figure class="postcard">
+<span class="tape t1"></span><span class="tape t2"></span>
+<picture><source srcset="/images/elisa.webp" type="image/webp"><img src="/images/elisa.jpg" width="900" height="1200" alt="Elisa, de dos, face à la mer depuis l'arrière d'un bateau"></picture>
+<figcaption>Cap sur l'horizon…</figcaption>
+<svg class="stamp" viewBox="0 0 120 120" aria-hidden="true"><defs><path id="ring" d="M60 60m-43 0a43 43 0 1 1 86 0a43 43 0 1 1-86 0"/></defs>
+<circle cx="60" cy="60" r="56" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="60" cy="60" r="31" fill="none" stroke="currentColor" stroke-width="1.4"/>
+<text font-size="11" fill="currentColor" font-family="Cinzel,Georgia,serif"><textPath href="#ring" textLength="266" lengthAdjust="spacing">ANCRE D'ARMOR · BRETAGNE · </textPath></text>
+<g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="60" cy="47" r="4"/><path d="M60 51v24M51 58h18M46 66a14 14 0 0 0 28 0"/></g></svg>
+</figure>
+<div class="letter">
+<p class="kicker">Carnet de bord</p>
 <h2>Bienvenue dans mon univers !</h2>
-<p class="sub">Je m'appelle Elisa et je suis une grande passionnée de créativité, de lecture et… de Bretagne.</p>
+<p class="lead2">Je m'appelle Elisa et je suis une grande passionnée de créativité, de lecture et… de Bretagne.</p>
+<div class="rope" aria-hidden="true"></div>
 <p>La Bretagne occupe une place toute particulière dans mon cœur. Ses paysages, son atmosphère, ses petites villes, la mer et cette sensation de liberté que j'y ressens sont une véritable source d'inspiration pour moi.</p>
 <p>Grande lectrice, j'aime également partager mes découvertes et m'évader à travers les livres.</p>
 <p>Aujourd'hui, j'ai choisi de réunir toutes ces passions dans un projet qui me ressemble : Ancre d'Armor, mon univers autour de la Bretagne. J'y propose déjà :</p>
-<ul class="about-list">
-<li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8S10.5 3 8 4s-.5 4 4 4zm0 0s1.5-5 4-4 .5 4-4 4z"/></svg><span>des objets illustrés, inspirés de la Bretagne</span></li>
-<li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg><span>des guides numériques pour découvrir et explorer la Bretagne</span></li>
-<li><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z"/></svg><span>et chaque dimanche, une histoire de Bretagne à lire ici</span></li>
-</ul>
+<ol class="escales">
+<li><span class="pt"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8S10.5 3 8 4s-.5 4 4 4zm0 0s1.5-5 4-4 .5 4-4 4z"/></svg></span><span><strong>Escale n° 1</strong>des objets illustrés, inspirés de la Bretagne</span></li>
+<li><span class="pt"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z"/><path d="M9 4v14M15 6v14"/></svg></span><span><strong>Escale n° 2</strong>des guides numériques pour découvrir et explorer la Bretagne</span></li>
+<li><span class="pt"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5c3-1 6-1 9 1v14c-3-2-6-2-9-1zM21 5c-3-1-6-1-9 1v14c3-2 6-2 9-1z"/></svg></span><span><strong>Escale n° 3</strong>et chaque dimanche, une histoire de Bretagne à lire ici</span></li>
+</ol>
 <p>Et, au fil du temps, de nouvelles créations et d'autres projets viendront compléter cet univers.</p>
-<p class="sign">Elisa</p>
+<div class="sigbox"><p class="sign">Elisa</p><p class="sigrole"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><path d="M12 7.5V21M7 11h10M4 14a8 8 0 0 0 16 0"/></svg> Fondatrice d'Ancre d'Armor</p></div>
 <div class="ctas-l"><a class="btn" href="/boutique">Découvrir la boutique</a> <a class="btn o2" href="/contact">M'écrire</a></div>
 </div>
 </div></section>
@@ -73,6 +83,6 @@
 </div>
 <p class="copy">© <span id="y">2026</span> Ancre d'Armor · Avec amour pour la Bretagne</p>
 </footer>
-<script src="/assets/site.js?v=8" defer></script>
+<script src="/assets/site.js?v=10" defer></script>
 </body>
 </html>

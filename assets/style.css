@@ -213,3 +213,41 @@ html{scroll-behavior:auto}
 .specs summary{cursor:pointer;font-weight:600;color:var(--btn)}
 .specs ul{margin:8px 0 0;padding-left:1.1em;color:var(--soft);display:grid;gap:3px}
 .price small{font-weight:400;font-size:.85rem;color:var(--soft);margin-left:4px}
+.about-ph video{display:block;width:100%;height:auto;border-radius:20px;box-shadow:0 18px 40px rgba(20,30,52,.18);background:#cfd8dd}
+/* Mon histoire : carnet de bord */
+:root{--paper:#fbf7ef;--paper-line:#e8dcc6;--gold2:#b48a4a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#1a2639;--paper-line:#33445e;--gold2:#d1ab6b}}
+.voyage{position:relative;overflow:hidden;background:
+ radial-gradient(circle at 92% 18%,rgba(180,138,74,.10),transparent 38%),
+ url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120'%3E%3Cg fill='none' stroke='%232f5d8a' stroke-opacity='.07' stroke-width='1.2'%3E%3Cpath d='M0 20q30-12 60 0t60 0 60 0 60 0'/%3E%3Cpath d='M0 50q30-12 60 0t60 0 60 0 60 0'/%3E%3Cpath d='M0 80q30-12 60 0t60 0 60 0 60 0'/%3E%3Cpath d='M0 110q30-12 60 0t60 0 60 0 60 0'/%3E%3C/g%3E%3C/svg%3E") var(--bg)}
+.voyage .about{grid-template-columns:minmax(260px,5fr) 7fr;gap:64px;align-items:start}
+.postcard{position:sticky;top:28px;margin:10px 0 0;padding:14px 14px 56px;background:#fffdf8;border-radius:4px;box-shadow:0 2px 0 #eadfcb,0 22px 44px rgba(20,30,52,.20);transform:rotate(-2.2deg)}
+.postcard img{width:100%;border-radius:2px;filter:saturate(1.05) contrast(1.02)}
+.postcard figcaption{position:absolute;left:0;right:0;bottom:12px;text-align:center;font:700 1.6rem 'Dancing Script',cursive;color:#2f4466}
+.tape{position:absolute;top:-12px;width:96px;height:28px;background:rgba(232,200,140,.62);box-shadow:0 1px 3px rgba(0,0,0,.08);z-index:2}
+.tape.t1{left:-18px;transform:rotate(-34deg)}
+.tape.t2{right:-18px;transform:rotate(30deg);background:rgba(47,93,138,.30)}
+.stamp{position:absolute;right:-26px;bottom:26px;width:118px;height:118px;color:#2f5d8a;opacity:.82;transform:rotate(14deg);mix-blend-mode:multiply}
+.letter{position:relative;background:var(--paper);border:1px solid var(--paper-line);border-radius:6px;padding:40px 44px 36px;box-shadow:0 12px 30px rgba(20,30,52,.07)}
+.letter::before{content:"";position:absolute;inset:8px;border:1px dashed var(--paper-line);border-radius:4px;pointer-events:none}
+.kicker{font:500 .8rem/1 Cinzel,Georgia,serif;letter-spacing:.22em;text-transform:uppercase;color:var(--gold2);margin:0 0 10px}
+.letter h2{margin:0 0 10px}
+.lead2{font-size:1.18rem;font-style:italic;color:var(--ink);margin:0 0 18px}
+.rope{height:7px;margin:4px 0 22px;width:150px;border-radius:4px;background:repeating-linear-gradient(115deg,var(--gold2) 0 5px,#e7cf9f 5px 9px);box-shadow:0 1px 0 rgba(0,0,0,.08)}
+.escales{list-style:none;padding:0;margin:8px 0 22px;position:relative}
+.escales::before{content:"";position:absolute;left:19px;top:20px;bottom:20px;border-left:2px dashed var(--gold2);opacity:.7}
+.escales li{position:relative;display:flex;gap:16px;align-items:center;padding:9px 0}
+.escales .pt{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--btn);color:#f7f1e8;box-shadow:0 0 0 4px var(--paper),0 0 0 5px var(--paper-line);position:relative;z-index:1}
+.escales .pt .ic{width:19px;height:19px}
+.escales strong{display:block;font:500 .72rem/1.2 Cinzel,Georgia,serif;letter-spacing:.14em;text-transform:uppercase;color:var(--gold2);margin-bottom:2px}
+.sigbox{margin:18px 0 22px}
+.sigbox .sign{margin:0;font-size:2.4rem;line-height:1}
+.sigrole{margin:4px 0 0;font-size:.9rem;color:var(--soft);display:flex;align-items:center;gap:6px}
+.sigrole .ic{color:var(--gold2)}
+@media (max-width:760px){
+.voyage .about{grid-template-columns:1fr;gap:40px}
+.postcard{position:relative;top:0;max-width:340px;margin:12px auto 0;padding:10px 10px 48px}
+.stamp{width:92px;height:92px;right:-14px;bottom:18px}
+.letter{padding:30px 22px 26px}
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .stamp{mix-blend-mode:normal}}

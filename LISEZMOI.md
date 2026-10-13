@@ -31,4 +31,4 @@ Ensuite : commande passée à la main sur Gelato, ou envoi du PDF pour un guide.
 - Vrais guides, produits, prix et photos (dossier `images/`)
 
 ## Après une modification de `assets/style.css` ou `assets/site.js`
-Les pages appellent `style.css?v=8` : augmenter ce numéro dans toutes les pages (v=9, v=10…) force les téléphones à recharger le style.
+Les pages appellent `style.css?v=10` : augmenter ce numéro dans toutes les pages (v=11, v=12…) force les téléphones à recharger le style.
