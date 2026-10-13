@@ -251,3 +251,62 @@ html{scroll-behavior:auto}
 .letter{padding:30px 22px 26px}
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .stamp{mix-blend-mode:normal}}
+
+/* =====================================================
+   Thème « carnet de bord » appliqué à tout le site
+   ===================================================== */
+:root{--chart:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='120'%3E%3Cg fill='none' stroke='%232f5d8a' stroke-opacity='.07' stroke-width='1.2'%3E%3Cpath d='M0 20q30-12 60 0t60 0 60 0 60 0'/%3E%3Cpath d='M0 50q30-12 60 0t60 0 60 0 60 0'/%3E%3Cpath d='M0 80q30-12 60 0t60 0 60 0 60 0'/%3E%3Cpath d='M0 110q30-12 60 0t60 0 60 0 60 0'/%3E%3C/g%3E%3C/svg%3E")}
+/* fonds : lignes de carte marine, sections alternées couleur papier */
+.sec{background:var(--chart) var(--bg)}
+.sec.alt{background:var(--chart) var(--paper);border-top:1px solid var(--paper-line);border-bottom:1px solid var(--paper-line)}
+.sec.end{background:linear-gradient(180deg,#22345a,#131f38)}
+/* titres de section : cordage doré sous le sous-titre */
+.sec .sw > .sub::after{content:"";display:block;width:120px;height:6px;margin-top:14px;border-radius:4px;background:repeating-linear-gradient(115deg,var(--gold2) 0 5px,#e7cf9f 5px 9px)}
+.end .sw > .sub::after{margin-inline:auto}
+/* papier : encadrés, trio, cartes, formulaires, pages légales, histoires */
+.note,.trio div,.card,form.contact,.legal,.story{background:var(--paper);border:1px solid var(--paper-line);position:relative;box-shadow:0 10px 26px rgba(20,30,52,.07)}
+.note::before,.trio div::before,.card::before,form.contact::before,.legal::before,.story::before{content:"";position:absolute;inset:6px;border:1px dashed var(--paper-line);border-radius:inherit;pointer-events:none;z-index:0}
+.note,.trio div{border-radius:10px}
+.trio div,.note,.card .bd,form.contact > *,.legal > *,.story > *{position:relative;z-index:1}
+.end .trio div{background:rgba(255,255,255,.06)}
+/* cartes produits / guides / histoires : image façon carte postale */
+.card{border-radius:8px;overflow:visible}
+.card .ph{margin:12px 12px 0;border-radius:3px;overflow:hidden;box-shadow:0 1px 0 #eadfcb,0 8px 18px rgba(20,30,52,.12)}
+.card .gal{position:relative;z-index:1}
+.card .gal .ph{margin:12px 12px 0}
+.card::after{content:"";position:absolute;top:-9px;left:50%;width:84px;height:22px;margin-left:-42px;background:rgba(232,200,140,.6);transform:rotate(-3deg);box-shadow:0 1px 3px rgba(0,0,0,.08);z-index:2}
+.card:nth-child(even)::after{background:rgba(47,93,138,.28);transform:rotate(4deg)}
+.card .tag{background:transparent;padding:0;border-radius:0;font:500 .74rem/1.2 Cinzel,Georgia,serif;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2)}
+.card h3{font-weight:600}
+.grid{gap:30px}
+/* étapes numérotées → escales sur une route maritime */
+.steps{position:relative;gap:6px}
+.steps::before{content:"";position:absolute;left:19px;top:18px;bottom:18px;border-left:2px dashed var(--gold2);opacity:.7}
+.steps li{padding:8px 0 8px 60px;min-height:40px;display:flex;align-items:center}
+.steps li::before{width:40px;height:40px;top:50%;margin-top:-20px;font:500 1rem Cinzel,Georgia,serif;box-shadow:0 0 0 4px var(--bg),0 0 0 5px var(--paper-line);z-index:1}
+/* formulaire de contact : une lettre */
+form.contact{padding:36px 40px;border-radius:6px}
+form.contact::after{content:"Bouteille à la mer";position:absolute;top:-12px;left:28px;padding:2px 12px;background:var(--bg);font:500 .74rem/1.6 Cinzel,Georgia,serif;letter-spacing:.18em;text-transform:uppercase;color:var(--gold2);z-index:2}
+form.contact input[type=text],form.contact input[type=email],form.contact textarea{background:transparent;border:0;border-bottom:1.5px solid var(--paper-line);border-radius:0;padding:8px 2px}
+form.contact textarea{background:repeating-linear-gradient(transparent 0 31px,var(--paper-line) 31px 32px);line-height:32px;border-bottom:0}
+/* pages légales et histoires : une page de carnet */
+.legal{padding:40px 44px;border-radius:6px}
+.story{padding:44px 48px;border-radius:6px}
+.story .note{box-shadow:none}
+/* puces dorées */
+.sec ul li::marker{color:var(--gold2)}
+/* pied de page : cordage en séparation */
+footer{background:var(--chart) var(--paper);border-top:0;position:relative}
+footer::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:repeating-linear-gradient(115deg,var(--gold2) 0 6px,#e7cf9f 6px 11px);opacity:.85}
+footer h4{font:500 .78rem/1.2 Cinzel,Georgia,serif;letter-spacing:.16em;text-transform:uppercase;color:var(--gold2)}
+footer .copy{border-top:1px dashed var(--paper-line)}
+/* page Mon histoire : on garde ses réglages propres */
+.voyage .letter::before{z-index:0}
+@media (max-width:760px){
+.legal,.story{padding:30px 22px}
+form.contact{padding:30px 20px}
+.card .ph,.card .gal .ph{margin:10px 10px 0}
+}
+/* cases à cocher : texte et lien sur une même ligne */
+.chk{display:block;position:relative;padding-left:26px}
+.chk input{position:absolute;left:0;top:3px;margin:0}
