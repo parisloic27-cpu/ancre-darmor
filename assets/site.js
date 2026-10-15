@@ -24,6 +24,16 @@ document.addEventListener('DOMContentLoaded', function () {
     check();
   });
 
+  // Quantité : affiche le total
+  document.querySelectorAll('.qty select').forEach(function (sel) {
+    var out = sel.parentNode.querySelector('.qtot');
+    function upd() {
+      var n = +sel.value, t = (n * parseFloat(sel.dataset.unit)).toFixed(2).replace('.', ',');
+      out.textContent = n > 1 ? 'Total : ' + t + ' €, livraison incluse' : '';
+    }
+    sel.addEventListener('change', upd); upd();
+  });
+
   // Formulaire de contact : objet pré-rempli via ?objet=...
   var obj = new URLSearchParams(location.search).get('objet');
   var field = document.getElementById('objet');
@@ -40,6 +50,12 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   });
+
+  // Photo animée : à l'arrêt si l'utilisateur préfère moins d'animations
+  var cine = document.querySelector('video.cine');
+  if (cine && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    cine.removeAttribute('autoplay'); cine.pause();
+  }
 
   // Année du pied de page
   var y = document.getElementById('y');

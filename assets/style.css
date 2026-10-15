@@ -327,3 +327,7 @@ form.contact{padding:30px 20px}
 /* boutique : cartes de même taille, visuels dans un cadre carré identique */
 .card .ph.pimg,.card .ph.pimg.sq{aspect-ratio:1/1}
 .grid:has(> .card:nth-child(2):last-child){align-items:stretch}
+.qty{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.qty label{font-weight:600;color:var(--ink)}
+.qty select{width:auto;min-width:76px;padding:8px 10px}
+.qtot{font-size:.95rem;color:var(--soft)}
