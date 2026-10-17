@@ -389,3 +389,5 @@ form.contact{padding:30px 20px}
 .price s{color:var(--soft);font-weight:400;font-size:.9em;margin-right:6px}
 .price .np{color:#a0412d}
 .price .pb{display:inline-block;margin-left:8px;font:700 .7rem/1 Nunito,sans-serif;letter-spacing:.06em;color:#16254a;background:#e8c88c;border-radius:4px;padding:4px 6px;vertical-align:middle}
+
+.card .bd .fpi{margin:-10px 0 6px;font-size:.82rem;color:var(--soft)}

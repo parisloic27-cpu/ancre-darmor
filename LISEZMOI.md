@@ -38,3 +38,4 @@ Les pages appellent `style.css?v=17` : augmenter ce numéro dans toutes les page
 - Le bandeau et le champ « Code promo » de la boutique disparaissent tout seuls après la date de fin.
 - Le code fait baisser le prix envoyé à PayPal, et le nom de l'article indique « code BREIZH15 (-15 %) » : vérifier ce libellé sur chaque commande.
 - Pour supprimer la promo du code : `PROMO = None`, puis regénérer.
+- Un seul usage par navigateur : le code est mémorisé comme utilisé après un paiement (libéré si le client annule chez PayPal).

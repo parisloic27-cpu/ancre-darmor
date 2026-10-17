@@ -84,7 +84,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (navigator.clipboard) navigator.clipboard.writeText(CODE).then(done, function () {}); else done();
       });
 
-      var fromUrl = (new URLSearchParams(location.search).get('code') || '').toUpperCase();
+      // Un seul usage par navigateur : le code est marqué « utilisé » à l'envoi vers PayPal,
+      // et libéré si le client annule le paiement (retour sur /boutique?paiement=annule).
+      var KEY = 'promo-utilise-' + CODE;
+      var store = function (v) { try { if (v) localStorage.setItem(KEY, v); else localStorage.removeItem(KEY); } catch (e) {} };
+      var used = function () { try { return !!localStorage.getItem(KEY); } catch (e) { return false; } };
+      var qs = new URLSearchParams(location.search);
+      if (qs.get('paiement') === 'annule') { try { if (localStorage.getItem(KEY) === 'en-cours') store(null); } catch (e) {} }
+      if (/^\/merci/.test(location.pathname)) { try { if (localStorage.getItem(KEY) === 'en-cours') store('paye'); } catch (e) {} }
+      var fromUrl = (qs.get('code') || '').toUpperCase();
       document.querySelectorAll('form[data-pay]').forEach(function (f) {
         var box = f.querySelector('.promo-f'); if (!box) return;
         box.hidden = false;
@@ -94,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var base = amt.value, baseName = name.value, baseHTML = price ? price.innerHTML : '';
         var fmt = function (x) { return x.replace('.', ',') + ' €'; };
         var apply = function () {
-          var c = inp.value.trim().toUpperCase(), on = c === CODE && Date.now() < END;
+          var c = inp.value.trim().toUpperCase(), deja = c === CODE && used(), on = c === CODE && Date.now() < END && !deja;
           if (on) {
             var nv = (Math.round(Math.round(parseFloat(base) * 100) * (100 - PCT) / 100) / 100).toFixed(2);
             amt.value = nv; name.value = baseName + ' · code ' + CODE + ' (-' + PCT + ' %)';
@@ -105,11 +113,12 @@ document.addEventListener('DOMContentLoaded', function () {
             amt.value = base; name.value = baseName;
             if (price) price.innerHTML = baseHTML;
             if (sel) sel.dataset.unit = base;
-            inp.classList.remove('ok'); msg.className = 'pmsg'; msg.textContent = c && c.length >= CODE.length ? 'Code non valide' : '';
+            inp.classList.remove('ok'); msg.className = 'pmsg'; msg.textContent = deja ? 'Code déjà utilisé : offre limitée à un achat par personne' : (c && c.length >= CODE.length ? 'Code non valide' : '');
           }
           if (sel) sel.dispatchEvent(new Event('change'));
         };
         inp.addEventListener('input', apply);
+        f.addEventListener('submit', function () { if (inp.classList.contains('ok')) store('en-cours'); });
         if (fromUrl === CODE) { inp.value = CODE; apply(); }
       });
     }
