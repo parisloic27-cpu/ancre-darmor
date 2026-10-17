@@ -32,3 +32,9 @@ Ensuite : commande passée à la main sur Gelato, ou envoi du PDF pour un guide.
 
 ## Après une modification de `assets/style.css` ou `assets/site.js`
 Les pages appellent `style.css?v=17` : augmenter ce numéro dans toutes les pages (v=18, v=19…) force les téléphones à recharger le style.
+
+## Code promo (bandeau en haut des pages)
+- Réglage dans `build.py` : `PROMO = dict(code="BREIZH15", pct=15, fin="2026-11-17T23:59:59+01:00", fin_txt="17 novembre")`.
+- Le bandeau et le champ « Code promo » de la boutique disparaissent tout seuls après la date de fin.
+- Le code fait baisser le prix envoyé à PayPal, et le nom de l'article indique « code BREIZH15 (-15 %) » : vérifier ce libellé sur chaque commande.
+- Pour supprimer la promo du code : `PROMO = None`, puis regénérer.

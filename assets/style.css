@@ -331,3 +331,61 @@ form.contact{padding:30px 20px}
 .qty label{font-weight:600;color:var(--ink)}
 .qty select{width:auto;min-width:76px;padding:8px 10px}
 .qtot{font-size:.95rem;color:var(--soft)}
+
+/* ===== Bandeau code promo ===== */
+.promo{position:relative;z-index:6;background:radial-gradient(120% 220% at 0% 50%,#24396a 0,#16254a 55%,#101b38 100%);color:#f4ead6;font-size:.9rem;line-height:1.3;overflow:hidden;padding-top:env(safe-area-inset-top,0px)}
+.promo[hidden]{display:none}
+.promo::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:repeating-linear-gradient(-45deg,#e8c88c 0 5px,#b48a4a 5px 9px);opacity:.9}
+.promo::before{content:"";position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='20' viewBox='0 0 120 20'%3E%3Cpath d='M0 14Q15 8 30 14T60 14T90 14T120 14' fill='none' stroke='%23e8c88c' stroke-opacity='.13' stroke-width='1.4'/%3E%3C/svg%3E") 0 100%/120px 20px repeat-x;animation:pvague 9s linear infinite;pointer-events:none}
+@keyframes pvague{to{background-position:120px 100%}}
+.pw{position:relative;max-width:1180px;margin:0 auto;padding:9px 24px 12px;display:flex;align-items:center;justify-content:center;gap:10px 18px;flex-wrap:wrap}
+.phare{width:80px;height:38px;flex:none;overflow:visible;margin:-6px -18px -6px -22px}
+.phare .tour{fill:none;stroke:#f4ead6;stroke-width:1.6;stroke-linejoin:round;stroke-linecap:round}
+.phare .feu{fill:#ffe6a8}
+.phare .beam{opacity:.85;transform-origin:24px 12px;animation:pfaisceau 4s ease-in-out infinite}
+@keyframes pfaisceau{0%,100%{transform:scaleX(1);opacity:.9}50%{transform:scaleX(-1);opacity:.35}}
+.ptx{margin:0}
+.ptx .sh{display:none}
+.ptx strong{font-family:Cinzel,serif;font-weight:700;color:#e8c88c;font-size:1.08rem;letter-spacing:.03em}
+.pcode{position:relative;display:inline-flex;align-items:center;gap:8px;font:700 .95rem/1 Cinzel,serif;letter-spacing:.12em;color:#16254a;background:#f7eedc;border:0;border-radius:6px;padding:7px 12px 7px 14px;cursor:pointer;box-shadow:0 0 0 1.5px #e8c88c inset,0 0 0 3px #16254a inset,0 0 0 4px rgba(232,200,140,.6) inset;transition:transform .2s}
+.pcode::before,.pcode::after{content:"";position:absolute;top:50%;width:10px;height:10px;margin-top:-5px;border-radius:50%;background:#16254a}
+.pcode::before{left:-5px}.pcode::after{right:-5px}
+.pcode small{font:600 .68rem/1 Nunito,sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#2f5d8a;border-left:1px dashed #b48a4a;padding-left:8px}
+.pcode:hover{transform:translateY(-1px) rotate(-1deg)}
+.pcode:focus-visible,.pgo:focus-visible{outline:2px solid #e8c88c;outline-offset:3px}
+.pcd{display:flex;gap:6px}
+.pcd .u{display:flex;flex-direction:column;align-items:center;min-width:40px;padding:4px 4px 3px;border-radius:6px;background:rgba(255,255,255,.07);border:1px solid rgba(232,200,140,.35)}
+.pcd b{font:700 1.08rem/1 Cinzel,serif;color:#fff;font-variant-numeric:tabular-nums;display:block}
+.pcd i{font:600 .58rem/1.2 Nunito,sans-serif;font-style:normal;letter-spacing:.08em;text-transform:uppercase;color:#e8c88c;margin-top:2px}
+.pcd b.tick{animation:ptick .45s ease-out}
+@keyframes ptick{0%{transform:translateY(-45%);opacity:0}100%{transform:none;opacity:1}}
+.pgo{color:#16254a;background:#e8c88c;border-radius:999px;padding:7px 16px;font-weight:700;text-decoration:none;white-space:nowrap;transition:background .2s}
+.pgo:hover{background:#f3dcae}
+@media (max-width:760px){
+ .promo{font-size:.82rem}
+ .pw{padding:8px 14px 11px;gap:8px 10px}
+ .phare{display:none}
+ .ptx{flex-basis:100%;text-align:center}
+ .ptx .lg,.pgo{display:none}
+ .ptx .sh{display:inline;color:inherit;text-decoration:underline;text-decoration-color:rgba(232,200,140,.6);text-underline-offset:3px}
+ .pw{padding:7px 12px 10px;gap:6px 10px}
+ .pcode{padding:6px 10px 6px 12px;font-size:.88rem}
+ .pcd{gap:4px}
+ .pcd .u{min-width:32px;padding:3px 3px 2px}
+ .pcd b{font-size:.98rem}
+ .pcd .u{min-width:34px}
+ .pgo{padding:6px 12px}
+}
+@media (prefers-reduced-motion:reduce){.promo::before,.phare .beam,.pcd b.tick{animation:none}}
+
+/* Champ code promo dans la boutique */
+.promo-f{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 4px}
+.promo-f[hidden]{display:none}
+.promo-f label{font-weight:600;color:var(--ink)}
+.promo-f input{width:150px;padding:8px 10px;text-transform:uppercase;letter-spacing:.06em}
+.promo-f input.ok{border-color:#3c8a5a;box-shadow:0 0 0 2px rgba(60,138,90,.18)}
+.pmsg{font-size:.85rem;color:var(--soft)}
+.pmsg.ok{color:#2f7a4d;font-weight:600}
+.price s{color:var(--soft);font-weight:400;font-size:.9em;margin-right:6px}
+.price .np{color:#a0412d}
+.price .pb{display:inline-block;margin-left:8px;font:700 .7rem/1 Nunito,sans-serif;letter-spacing:.06em;color:#16254a;background:#e8c88c;border-radius:4px;padding:4px 6px;vertical-align:middle}
