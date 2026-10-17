@@ -410,3 +410,16 @@ form.contact{padding:30px 20px}
  .surmesure{flex-direction:column;text-align:center;padding:30px 20px 24px;gap:14px}
  .surmesure h2{text-align:center;font-size:1.8rem}
 }
+
+/* Mode sombre : encart sur mesure + prix promo */
+@media (prefers-color-scheme:dark){
+ :root:not([data-theme="light"]) .surmesure{box-shadow:0 10px 24px rgba(0,0,0,.25)}
+ :root:not([data-theme="light"]) .surmesure h2{color:#e8c88c}
+ :root:not([data-theme="light"]) .sm-ic{background:#10203a}
+ :root:not([data-theme="light"]) .sm-btn{background:#e8c88c;color:#16254a}
+ :root:not([data-theme="light"]) .sm-btn svg{stroke:#16254a}
+ :root:not([data-theme="light"]) .sm-btn:hover{background:#f3dcae}
+ :root:not([data-theme="light"]) .price .np{color:#f0a48f}
+ :root:not([data-theme="light"]) .pmsg.ok{color:#8fd1a5}
+ :root:not([data-theme="light"]) .promo-f input.ok{border-color:#8fd1a5}
+}
