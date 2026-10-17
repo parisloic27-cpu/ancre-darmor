@@ -391,3 +391,22 @@ form.contact{padding:30px 20px}
 .price .pb{display:inline-block;margin-left:8px;font:700 .7rem/1 Nunito,sans-serif;letter-spacing:.06em;color:#16254a;background:#e8c88c;border-radius:4px;padding:4px 6px;vertical-align:middle}
 
 .card .bd .fpi{margin:-10px 0 6px;font-size:.82rem;color:var(--soft)}
+
+/* Encart « Création sur mesure » (boutique) */
+.surmesure{position:relative;display:flex;align-items:center;gap:22px;margin:44px 0 0;padding:26px 30px;background:var(--paper);border:1px solid var(--paper-line);border-radius:10px;box-shadow:0 1px 0 #eadfcb,0 10px 24px rgba(20,30,52,.08)}
+.surmesure::before{content:"";position:absolute;inset:6px;border:1.5px dashed rgba(180,138,74,.45);border-radius:6px;pointer-events:none}
+.surmesure::after{content:"";position:absolute;top:-10px;left:38px;width:90px;height:22px;background:rgba(47,93,138,.22);transform:rotate(-4deg)}
+.sm-ic{flex:none;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#16254a;box-shadow:0 0 0 4px var(--paper),0 0 0 5.5px #b48a4a}
+.sm-ic svg{width:30px;height:30px;fill:none;stroke:#e8c88c;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.sm-tx{flex:1;min-width:0}
+.sm-k{margin:0;font:600 .72rem/1 Cinzel,serif;letter-spacing:.16em;text-transform:uppercase;color:#b48a4a}
+.surmesure h2{display:block;margin:4px 0 6px;font:700 2rem/1.15 'Dancing Script',cursive;color:#16254a;text-align:left}
+.sm-tx p:last-child{margin:0;color:var(--ink)}
+.sm-btn{flex:none;display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;background:#16254a;color:#fff;font-weight:700;text-decoration:none;transition:transform .2s,background .2s}
+.sm-btn svg{width:18px;height:18px;fill:none;stroke:#e8c88c;stroke-width:1.8}
+.sm-btn:hover{background:#2f5d8a;transform:translateY(-1px)}
+.sm-btn:focus-visible{outline:2px solid #b48a4a;outline-offset:3px}
+@media (max-width:760px){
+ .surmesure{flex-direction:column;text-align:center;padding:30px 20px 24px;gap:14px}
+ .surmesure h2{text-align:center;font-size:1.8rem}
+}
