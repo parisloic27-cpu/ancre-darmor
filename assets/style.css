@@ -423,3 +423,5 @@ form.contact{padding:30px 20px}
  :root:not([data-theme="light"]) .pmsg.ok{color:#8fd1a5}
  :root:not([data-theme="light"]) .promo-f input.ok{border-color:#8fd1a5}
 }
+.copy .credit{display:block;margin-top:6px;font-size:.78rem;opacity:.8}
+.copy .credit a{text-underline-offset:2px}
