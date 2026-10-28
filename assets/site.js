@@ -124,6 +124,75 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  // Paiement : boutons PayPal modernes (PayPal + carte bancaire sans compte).
+  // Le prix est recalculé côté serveur (/api/paypal/create). Si PayPal ne se charge pas,
+  // l'ancien bouton « Payer avec PayPal » reste affiché.
+  var payForms = document.querySelectorAll('form[data-pay]');
+  if (payForms.length && window.fetch) {
+    fetch('/api/paypal/config').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (c) {
+      if (!c || !c.clientId) return;
+      var sdk = document.createElement('script');
+      sdk.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(c.clientId) + '&currency=EUR&locale=fr_FR&components=buttons&enable-funding=card';
+      sdk.onload = function () { payForms.forEach(setupPay); };
+      document.head.appendChild(sdk);
+    }).catch(function () {});
+  }
+  var promoEl = document.querySelector('.promo');
+  var PKEY = promoEl ? 'promo-utilise-' + promoEl.dataset.code : null;
+  function setupPay(f) {
+    if (!window.paypal || !paypal.Buttons) return;
+    var box = f.querySelector('.pp'), slot = box && box.querySelector('.pp-btns'), lock = box && box.querySelector('.pp-lock');
+    var msg = f.querySelector('.pp-msg'), sub = f.querySelector('button[type=submit]');
+    var req = f.querySelectorAll('input[type=checkbox][data-required]');
+    var sel = f.querySelector('select[name=quantity]'), inp = f.querySelector('[data-promo]');
+    if (!box || !slot) return;
+    var acts = [];
+    var ok = function () { var o = true; req.forEach(function (c) { if (!c.checked) o = false; }); return o; };
+    var sync = function () {
+      var o = ok();
+      lock.hidden = o; box.classList.toggle('locked', !o);
+      acts.forEach(function (a) { if (o) a.enable(); else a.disable(); });
+      if (o) msg.textContent = '';
+    };
+    var post = function (url, data) {
+      return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+        .then(function (r) { return r.json().then(function (d) { d._ok = r.ok; return d; }); });
+    };
+    var opts = {
+      style: { shape: 'pill', height: 45 },
+      onInit: function (d, a) { acts.push(a); sync(); },
+      onClick: function () { if (!ok()) msg.textContent = 'Merci de cocher ' + (req.length > 1 ? 'les cases' : 'la case') + ' avant de payer.'; },
+      createOrder: function () {
+        msg.textContent = '';
+        var code = inp && inp.classList.contains('ok') ? inp.value.trim().toUpperCase() : '';
+        if (code && PKEY) { try { localStorage.setItem(PKEY, 'en-cours'); } catch (e) {} }
+        return post('/api/paypal/create', { ref: f.dataset.ref, qty: sel ? sel.value : 1, code: code }).then(function (d) {
+          if (!d._ok || !d.id) throw new Error(d.error || 'commande');
+          return d.id;
+        });
+      },
+      onApprove: function (data, actions) {
+        return post('/api/paypal/capture', { orderID: data.orderID }).then(function (d) {
+          if (d._ok && d.status === 'COMPLETED') { location.href = '/merci?commande=' + encodeURIComponent(d.id); return; }
+          if (d.issue === 'INSTRUMENT_DECLINED') return actions.restart();
+          msg.textContent = "Le paiement n'a pas abouti et rien n'a été débité. Réessayez ou contactez-moi.";
+        });
+      },
+      onCancel: function () {
+        if (PKEY) { try { if (localStorage.getItem(PKEY) === 'en-cours') localStorage.removeItem(PKEY); } catch (e) {} }
+        msg.textContent = 'Paiement annulé : vous pouvez réessayer quand vous voulez.';
+      },
+      onError: function () { msg.textContent = "Le paiement n'a pas pu démarrer. Réessayez dans un instant ou contactez-moi."; }
+    };
+    var n = 0;
+    [paypal.FUNDING.PAYPAL, paypal.FUNDING.CARD].forEach(function (src) {
+      var o = {}; for (var k in opts) o[k] = opts[k]; o.fundingSource = src;
+      var b = paypal.Buttons(o);
+      if (b.isEligible()) { var d = document.createElement('div'); d.className = 'pp-b'; slot.appendChild(d); b.render(d); n++; }
+    });
+    if (n) { box.hidden = false; sub.hidden = true; req.forEach(function (c) { c.addEventListener('change', sync); }); sync(); }
+  }
+
   // Année du pied de page
   var y = document.getElementById('y');
   if (y) y.textContent = new Date().getFullYear();

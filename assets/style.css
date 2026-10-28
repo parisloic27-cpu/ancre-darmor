@@ -425,3 +425,16 @@ form.contact{padding:30px 20px}
 }
 .copy .credit{display:block;margin-top:6px;font-size:.78rem;opacity:.8}
 .copy .credit a{text-underline-offset:2px}
+
+/* Boutons PayPal / carte bancaire */
+.pp{margin-top:12px}
+.pp[hidden]{display:none}
+.pp-b{position:relative;z-index:0}
+.pp-b+.pp-b{margin-top:10px}
+.pp-lock{margin:0 0 8px;font-size:.85rem;color:var(--soft)}
+.pp-lock[hidden]{display:none}
+.pp.locked .pp-btns{opacity:.45;filter:grayscale(.6);transition:opacity .2s}
+.pp-msg{margin:8px 0 0;font-size:.88rem;color:#a0412d}
+.pp-msg:empty{display:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pp-msg{color:#f0a48f}}
+form[data-pay] button[type=submit][hidden]{display:none}

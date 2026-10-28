@@ -39,3 +39,9 @@ Les pages appellent `style.css?v=17` : augmenter ce numéro dans toutes les page
 - Le code fait baisser le prix envoyé à PayPal, et le nom de l'article indique « code BREIZH15 (-15 %) » : vérifier ce libellé sur chaque commande.
 - Pour supprimer la promo du code : `PROMO = None`, puis regénérer.
 - Un seul usage par navigateur : le code est mémorisé comme utilisé après un paiement (libéré si le client annule chez PayPal).
+
+## Paiement PayPal + carte bancaire (boutons modernes)
+- Fonction `functions/api/paypal/[action].js` (générée par `build.py` : catalogue des prix et promo côté serveur).
+- Variables Cloudflare Pages (Production) : `PAYPAL_CLIENT_ID` (texte) et `PAYPAL_SECRET` (secret), copiés depuis developer.paypal.com > Apps & Credentials > Live.
+- Sans ces variables, ou si PayPal ne se charge pas, l'ancien bouton « Payer avec PayPal » reste affiché.
+- Changer un prix : modifier `build.py`, regénérer, redéposer les pages ET la fonction.

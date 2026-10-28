@@ -21,7 +21,7 @@
 <link rel="icon" href="/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/dancing-script-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/style.css?v=22">
+<link rel="stylesheet" href="/assets/style.css?v=23">
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
@@ -74,7 +74,7 @@
 <details class="specs"><summary>Caractéristiques</summary><ul><li>Guide numérique au format PDF, 60 pages</li><li>À lire sur téléphone, tablette ou ordinateur, ou à imprimer (format A4)</li><li>Fonctionne sans connexion une fois téléchargé</li><li>Sommaire cliquable</li><li>Envoyé par e-mail sous 24 heures au plus tard</li></ul></details>
 <p class="price">9,90 €<small></small> </p>
 
-<form data-pay action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<form data-pay data-ref="G-FIN" data-digital action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="ancredarmor@gmail.com">
 <input type="hidden" name="item_name" value="Guide « Le Finistère »">
@@ -89,6 +89,8 @@
 <label class="chk"><input type="checkbox" data-required> Je demande à recevoir le guide immédiatement et je renonce à mon droit de rétractation dès son envoi.</label>
 <label class="chk"><input type="checkbox" data-required> J'accepte les <a href="/cgv">conditions générales de vente</a>.</label>
 <button class="btn" type="submit" disabled>Payer avec PayPal</button>
+<div class="pp" hidden><p class="pp-lock">Cochez les cases ci-dessus pour payer.</p><div class="pp-btns" id="pp-G-FIN"></div></div>
+<p class="pp-msg" role="alert" aria-live="assertive"></p>
 </form>
 </div></article>
 </div>
@@ -103,6 +105,6 @@
 </div>
 <p class="copy">© <span id="y">2026</span> Ancre d'Armor · Avec amour pour la Bretagne<span class="credit">Site réalisé par <a href="https://tamonlink.fr" target="_blank" rel="noopener">tamonlink.fr</a></span></p>
 </footer>
-<script src="/assets/site.js?v=22" defer></script>
+<script src="/assets/site.js?v=23" defer></script>
 </body>
 </html>

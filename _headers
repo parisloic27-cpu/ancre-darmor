@@ -3,7 +3,7 @@
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self' https://static.cloudflareinsights.com; connect-src 'self' https://cloudflareinsights.com; font-src 'self'; form-action 'self' https://www.paypal.com; frame-ancestors 'none'; base-uri 'self'
+  Content-Security-Policy: default-src 'self'; img-src 'self' data: https://*.paypal.com https://*.paypalobjects.com; style-src 'self' 'unsafe-inline'; script-src 'self' https://static.cloudflareinsights.com https://www.paypal.com https://*.paypal.com https://*.paypalobjects.com; connect-src 'self' https://cloudflareinsights.com https://*.paypal.com; frame-src https://*.paypal.com https://*.paypalobjects.com; font-src 'self'; form-action 'self' https://www.paypal.com; frame-ancestors 'none'; base-uri 'self'
 
 /assets/fonts/*
   Cache-Control: public, max-age=31536000, immutable
