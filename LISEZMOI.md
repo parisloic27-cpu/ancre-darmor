@@ -45,3 +45,8 @@ Les pages appellent `style.css?v=17` : augmenter ce numéro dans toutes les page
 - Variables Cloudflare Pages (Production) : `PAYPAL_CLIENT_ID` (texte) et `PAYPAL_SECRET` (secret), copiés depuis developer.paypal.com > Apps & Credentials > Live.
 - Sans ces variables, ou si PayPal ne se charge pas, l'ancien bouton « Payer avec PayPal » reste affiché.
 - Changer un prix : modifier `build.py`, regénérer, redéposer les pages ET la fonction.
+
+## Panier
+- Boutons « Ajouter au panier » sur la boutique et les guides ; page `/panier` (non indexée) avec récapitulatif, code promo, CGV et paiement PayPal / carte.
+- Le panier est gardé dans le navigateur du visiteur. Le serveur (`/api/paypal/create`) recalcule tous les prix à partir du catalogue généré par `build.py`.
+- Si les boutons PayPal modernes ne se chargent pas, la page propose un panier PayPal classique (repli).

@@ -1,6 +1,6 @@
 // Paiement PayPal (boutons modernes : PayPal + carte bancaire) — Cloudflare Pages Function
 //   GET  /api/paypal/config   → identifiant public de l'application PayPal
-//   POST /api/paypal/create   → crée la commande ; le prix est calculé ICI, pas dans la page
+//   POST /api/paypal/create   → crée la commande du panier ; les prix sont calculés ICI, pas dans la page
 //   POST /api/paypal/capture  → encaisse la commande après validation par le client
 // Variables à définir dans Cloudflare Pages > Settings > Variables and secrets :
 //   PAYPAL_CLIENT_ID  (texte)   Client ID de l'application PayPal « Live »
@@ -53,40 +53,57 @@ async function token(env) {
 const cents = (eur) => Math.round(parseFloat(eur) * 100);
 const fmt = (c) => (c / 100).toFixed(2);
 
+// Panier : { items: [{ ref, qty }], code } (ancien format { ref, qty, code } accepté aussi)
 export function priceOrder(body, now = Date.now()) {
-  const p = CATALOG[body && body.ref];
-  if (!p) return { error: 'Produit inconnu' };
-  let qty = parseInt(body.qty, 10) || 1;
-  if (p.digital) qty = 1;
-  if (qty < 1 || qty > 6) return { error: 'Quantité non valide' };
+  body = body || {};
+  let list = Array.isArray(body.items) ? body.items : [{ ref: body.ref, qty: body.qty }];
+  if (!list.length || list.length > 10) return { error: 'Panier vide ou trop grand' };
   const code = String(body.code || '').trim().toUpperCase();
-  const promo = !p.digital && PROMO && code === PROMO.code && now < Date.parse(PROMO.end);
-  let unit = cents(p.price);
-  if (promo) unit = Math.round(unit * (100 - PROMO.pct) / 100);
-  const name = (p.name + (promo ? ` · code ${PROMO.code} (-${PROMO.pct} %)` : '')).slice(0, 127);
+  const promoOn = !!(PROMO && code === PROMO.code && now < Date.parse(PROMO.end));
+  const seen = {};
+  const items = [];
+  let total = 0, physical = false, promoUsed = false;
+  for (const it of list) {
+    const ref = it && it.ref;
+    const p = CATALOG[ref];
+    if (!p) return { error: 'Produit inconnu' };
+    if (seen[ref]) return { error: 'Produit en double' };
+    seen[ref] = 1;
+    let qty = parseInt(it.qty, 10) || 1;
+    if (p.digital) qty = 1;
+    if (qty < 1 || qty > 6) return { error: 'Quantité non valide' };
+    let unit = cents(p.price);
+    const promo = promoOn && !p.digital;
+    if (promo) { unit = Math.round(unit * (100 - PROMO.pct) / 100); promoUsed = true; }
+    if (!p.digital) physical = true;
+    total += unit * qty;
+    items.push({
+      name: (p.name + (promo ? ` · code ${PROMO.code} (-${PROMO.pct} %)` : '')).slice(0, 127),
+      sku: ref, quantity: String(qty),
+      unit_amount: { currency_code: 'EUR', value: fmt(unit) },
+      category: p.digital ? 'DIGITAL_GOODS' : 'PHYSICAL_GOODS',
+    });
+  }
   return {
+    total: fmt(total),
     order: {
       intent: 'CAPTURE',
       purchase_units: [{
-        reference_id: body.ref,
-        description: name,
-        custom_id: promo ? PROMO.code : undefined,
+        reference_id: 'panier',
+        description: "Commande Ancre d'Armor",
+        custom_id: promoUsed ? PROMO.code : undefined,
         amount: {
           currency_code: 'EUR',
-          value: fmt(unit * qty),
-          breakdown: { item_total: { currency_code: 'EUR', value: fmt(unit * qty) } },
+          value: fmt(total),
+          breakdown: { item_total: { currency_code: 'EUR', value: fmt(total) } },
         },
-        items: [{
-          name, sku: body.ref, quantity: String(qty),
-          unit_amount: { currency_code: 'EUR', value: fmt(unit) },
-          category: p.digital ? 'DIGITAL_GOODS' : 'PHYSICAL_GOODS',
-        }],
+        items,
       }],
       application_context: {
         brand_name: "Ancre d'Armor",
         locale: 'fr-FR',
         user_action: 'PAY_NOW',
-        shipping_preference: p.digital ? 'NO_SHIPPING' : 'GET_FROM_FILE',
+        shipping_preference: physical ? 'GET_FROM_FILE' : 'NO_SHIPPING',
       },
     },
   };

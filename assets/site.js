@@ -9,31 +9,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Bouton PayPal actif seulement quand les cases obligatoires sont cochées
-  document.querySelectorAll('form[data-pay]').forEach(function (f) {
-    var btn = f.querySelector('button[type=submit]');
-    var req = f.querySelectorAll('input[type=checkbox][data-required]');
-    function check() {
-      var ok = true;
-      req.forEach(function (c) { if (!c.checked) ok = false; });
-      f.querySelectorAll('[data-required-text]').forEach(function (i) { if (!i.value.trim()) ok = false; });
-      btn.disabled = !ok;
-    }
-    f.addEventListener('input', check);
-    f.addEventListener('change', check);
-    check();
-  });
-
-  // Quantité : affiche le total
-  document.querySelectorAll('.qty select').forEach(function (sel) {
-    var out = sel.parentNode.querySelector('.qtot');
-    function upd() {
-      var n = +sel.value, t = (n * parseFloat(sel.dataset.unit)).toFixed(2).replace('.', ',');
-      out.textContent = n > 1 ? 'Total : ' + t + ' €, livraison incluse' : '';
-    }
-    sel.addEventListener('change', upd); upd();
-  });
-
   // Formulaire de contact : objet pré-rempli via ?objet=...
   var obj = new URLSearchParams(location.search).get('objet');
   var field = document.getElementById('objet');
@@ -84,113 +59,245 @@ document.addEventListener('DOMContentLoaded', function () {
         if (navigator.clipboard) navigator.clipboard.writeText(CODE).then(done, function () {}); else done();
       });
 
-      // Un seul usage par navigateur : le code est marqué « utilisé » à l'envoi vers PayPal,
-      // et libéré si le client annule le paiement (retour sur /boutique?paiement=annule).
-      var KEY = 'promo-utilise-' + CODE;
-      var store = function (v) { try { if (v) localStorage.setItem(KEY, v); else localStorage.removeItem(KEY); } catch (e) {} };
-      var used = function () { try { return !!localStorage.getItem(KEY); } catch (e) { return false; } };
-      var qs = new URLSearchParams(location.search);
-      if (qs.get('paiement') === 'annule') { try { if (localStorage.getItem(KEY) === 'en-cours') store(null); } catch (e) {} }
-      if (/^\/merci/.test(location.pathname)) { try { if (localStorage.getItem(KEY) === 'en-cours') store('paye'); } catch (e) {} }
-      var fromUrl = (qs.get('code') || '').toUpperCase();
-      document.querySelectorAll('form[data-pay]').forEach(function (f) {
-        var box = f.querySelector('.promo-f'); if (!box) return;
-        box.hidden = false;
-        var inp = box.querySelector('input'), msg = box.querySelector('.pmsg');
-        var amt = f.querySelector('input[name=amount]'), name = f.querySelector('input[name=item_name]');
-        var sel = f.querySelector('.qty select'), card = f.closest('.bd'), price = card && card.querySelector('.price');
-        var base = amt.value, baseName = name.value, baseHTML = price ? price.innerHTML : '';
-        var fmt = function (x) { return x.replace('.', ',') + ' €'; };
-        var apply = function () {
-          var c = inp.value.trim().toUpperCase(), deja = c === CODE && used(), on = c === CODE && Date.now() < END && !deja;
-          if (on) {
-            var nv = (Math.round(Math.round(parseFloat(base) * 100) * (100 - PCT) / 100) / 100).toFixed(2);
-            amt.value = nv; name.value = baseName + ' · code ' + CODE + ' (-' + PCT + ' %)';
-            if (price) price.innerHTML = '<s>' + fmt(base) + '</s><span class="np">' + fmt(nv) + '</span><span class="pb">-' + PCT + ' %</span>';
-            if (sel) sel.dataset.unit = nv;
-            inp.classList.add('ok'); msg.className = 'pmsg ok'; msg.textContent = 'Code appliqué : -' + PCT + ' %';
-          } else {
-            amt.value = base; name.value = baseName;
-            if (price) price.innerHTML = baseHTML;
-            if (sel) sel.dataset.unit = base;
-            inp.classList.remove('ok'); msg.className = 'pmsg'; msg.textContent = deja ? 'Code déjà utilisé : offre limitée à un achat par personne' : (c && c.length >= CODE.length ? 'Code non valide' : '');
-          }
-          if (sel) sel.dispatchEvent(new Event('change'));
-        };
-        inp.addEventListener('input', apply);
-        f.addEventListener('submit', function () { if (inp.classList.contains('ok')) store('en-cours'); });
-        if (fromUrl === CODE) { inp.value = CODE; apply(); }
-      });
     }
   }
 
-  // Paiement : boutons PayPal modernes (PayPal + carte bancaire sans compte).
-  // Le prix est recalculé côté serveur (/api/paypal/create). Si PayPal ne se charge pas,
-  // l'ancien bouton « Payer avec PayPal » reste affiché.
-  var payForms = document.querySelectorAll('form[data-pay]');
-  if (payForms.length && window.fetch) {
-    fetch('/api/paypal/config').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (c) {
-      if (!c || !c.clientId) return;
-      var sdk = document.createElement('script');
-      sdk.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(c.clientId) + '&currency=EUR&locale=fr_FR&components=buttons&enable-funding=card';
-      sdk.onload = function () { payForms.forEach(setupPay); };
-      document.head.appendChild(sdk);
-    }).catch(function () {});
+  // ===== Panier =====
+  // Contenu gardé dans le navigateur du visiteur (localStorage, ou en mémoire si indisponible).
+  // Les prix affichés viennent de la page ; le prix payé est recalculé côté serveur (/api/paypal/create).
+  var LS = (function () { var mem = {}; return {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return mem[k] || null; } },
+    set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { mem[k] = v; } },
+    del: function (k) { try { localStorage.removeItem(k); } catch (e) { delete mem[k]; } }
+  }; })();
+  var CKEY = 'ancre-panier';
+  var readCart = function () { try { var c = JSON.parse(LS.get(CKEY) || '[]'); return Array.isArray(c) ? c : []; } catch (e) { return []; } };
+  var writeCart = function (c) { if (c.length) LS.set(CKEY, JSON.stringify(c)); else LS.del(CKEY); badge(); };
+  var eur = function (c) { return (c / 100).toFixed(2).replace('.', ',') + ' €'; };
+  var cents = function (p) { return Math.round(parseFloat(p) * 100); };
+  var count = function (c) { return c.reduce(function (n, i) { return n + (+i.qty || 0); }, 0); };
+  function badge() {
+    var n = count(readCart());
+    document.querySelectorAll('.cartl .cnt').forEach(function (b) { b.textContent = n; b.hidden = !n; });
+    document.querySelectorAll('.cartl').forEach(function (a) { a.setAttribute('aria-label', n ? 'Mon panier : ' + n + ' article' + (n > 1 ? 's' : '') : 'Mon panier'); });
   }
-  var promoEl = document.querySelector('.promo');
-  var PKEY = promoEl ? 'promo-utilise-' + promoEl.dataset.code : null;
-  function setupPay(f) {
-    if (!window.paypal || !paypal.Buttons) return;
-    var box = f.querySelector('.pp'), slot = box && box.querySelector('.pp-btns'), lock = box && box.querySelector('.pp-lock');
-    var msg = f.querySelector('.pp-msg'), sub = f.querySelector('button[type=submit]');
-    var req = f.querySelectorAll('input[type=checkbox][data-required]');
-    var sel = f.querySelector('select[name=quantity]'), inp = f.querySelector('[data-promo]');
-    if (!box || !slot) return;
-    var acts = [];
-    var ok = function () { var o = true; req.forEach(function (c) { if (!c.checked) o = false; }); return o; };
-    var sync = function () {
-      var o = ok();
-      lock.hidden = o; box.classList.toggle('locked', !o);
+  badge();
+  window.addEventListener('storage', function (e) { if (e.key === CKEY) badge(); });
+
+  // Promo : code, fin, et « un achat par personne » (indicateur gardé dans le navigateur)
+  var PROMO = pb && Date.now() < END ? { code: CODE, pct: PCT } : null;
+  var PKEY = PROMO ? 'promo-utilise-' + PROMO.code : null;
+  var qs = new URLSearchParams(location.search);
+  if (PROMO && (qs.get('code') || '').toUpperCase() === PROMO.code) LS.set('panier-code', PROMO.code);
+  if (PKEY && qs.get('paiement') === 'annule' && LS.get(PKEY) === 'en-cours') LS.del(PKEY);
+  if (/^\/merci/.test(location.pathname)) {
+    if (PKEY && LS.get(PKEY) === 'en-cours') LS.set(PKEY, 'paye');
+    if (LS.get('panier-envoye')) { LS.del('panier-envoye'); LS.del('panier-code'); writeCart([]); }
+  }
+
+  // Boutons « Ajouter au panier »
+  document.querySelectorAll('.buy').forEach(function (b) {
+    var btn = b.querySelector('.addc'), sel = b.querySelector('select'), out = b.querySelector('.added'), tmo;
+    btn.addEventListener('click', function () {
+      var d = b.dataset, c = readCart(), q = sel ? +sel.value : 1, it = null;
+      c.forEach(function (i) { if (i.ref === d.ref) it = i; });
+      if (it) it.qty = 'digital' in d ? 1 : Math.min(6, it.qty + q);
+      else c.push({ ref: d.ref, qty: q, name: d.name, price: d.price, img: d.img, url: d.url, digital: 'digital' in d });
+      writeCart(c);
+      out.innerHTML = '';
+      var t = document.createElement('span'); t.textContent = ('digital' in d && it ? 'Déjà dans votre panier. ' : 'Ajouté au panier ! ');
+      var a = document.createElement('a'); a.href = '/panier'; a.textContent = 'Voir le panier →';
+      out.appendChild(t); out.appendChild(a); out.classList.add('on');
+      btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop');
+      document.querySelectorAll('.cartl').forEach(function (l) { l.classList.remove('bump'); void l.offsetWidth; l.classList.add('bump'); });
+      clearTimeout(tmo); tmo = setTimeout(function () { out.classList.remove('on'); }, 6000);
+    });
+  });
+
+  // Page panier
+  var cartEl = document.querySelector('.cart');
+  if (cartEl) {
+    var CAT = {};
+    try { CAT = JSON.parse(document.getElementById('cart-cat').textContent); } catch (e) {}
+    var list = cartEl.querySelector('.cart-items'), empty = cartEl.querySelector('.cart-empty'), full = cartEl.querySelector('.cart-full');
+    var f = cartEl.querySelector('form[data-pay-cart]'), msg = f.querySelector('.pp-msg');
+    var cgv = f.querySelector('[data-required]'), retr = f.querySelector('.retr'), retrBox = f.querySelector('[data-required-digital]');
+    var inp = cartEl.querySelector('[data-promo]'), pmsg = cartEl.querySelector('.cart-promo .pmsg');
+    var S = function (k) { return cartEl.querySelector('[data-sum="' + k + '"]'); };
+    var codeOn = false;
+
+    // Remet les articles à jour avec le catalogue de la page (prix, noms), retire les produits disparus
+    var clean = function () {
+      var c = readCart().filter(function (i) { return CAT[i.ref]; }).map(function (i) {
+        var p = CAT[i.ref]; return { ref: i.ref, qty: p.digital ? 1 : Math.max(1, Math.min(6, +i.qty || 1)), name: p.name, price: p.price, img: p.img, url: p.url, digital: p.digital };
+      });
+      writeCart(c); return c;
+    };
+    var hasDigital = function (c) { return c.some(function (i) { return i.digital; }); };
+    var hasPhysical = function (c) { return c.some(function (i) { return !i.digital; }); };
+    var ready = function () {
+      var c = readCart();
+      return c.length && cgv.checked && (!hasDigital(c) || retrBox.checked);
+    };
+    var lines = function () {
+      var c = readCart(), sub = 0, disc = 0;
+      c.forEach(function (i) {
+        var u = cents(i.price), l = u * i.qty; sub += l;
+        if (codeOn && !i.digital) disc += l - Math.round(u * (100 - PROMO.pct) / 100) * i.qty;
+      });
+      return { c: c, sub: sub, disc: disc, tot: sub - disc };
+    };
+
+    var render = function () {
+      var L = lines(), c = L.c;
+      empty.hidden = !!c.length; full.hidden = !c.length;
+      list.innerHTML = '';
+      c.forEach(function (i) {
+        var li = document.createElement('li'); li.className = 'ci';
+        var img = document.createElement('img'); img.src = i.img; img.alt = ''; img.width = 96; img.height = 96; img.loading = 'lazy';
+        var bd = document.createElement('div'); bd.className = 'ci-bd';
+        var nm = document.createElement('a'); nm.className = 'ci-n'; nm.href = i.url; nm.textContent = i.name;
+        var pr = document.createElement('p'); pr.className = 'ci-p';
+        var u = cents(i.price), du = codeOn && !i.digital ? Math.round(u * (100 - PROMO.pct) / 100) : u;
+        pr.innerHTML = (du !== u ? '<s>' + eur(u) + '</s> ' : '') + '<span>' + eur(du) + '</span>' + (i.digital ? ' · guide PDF envoyé par e-mail' : ' · frais de port inclus');
+        bd.appendChild(nm); bd.appendChild(pr);
+        var ctl = document.createElement('div'); ctl.className = 'ci-ctl';
+        if (!i.digital) {
+          var st = document.createElement('div'); st.className = 'step';
+          var mk = function (txt, lab, dq) { var b = document.createElement('button'); b.type = 'button'; b.textContent = txt; b.setAttribute('aria-label', lab);
+            b.addEventListener('click', function () { var cc = readCart(); cc.forEach(function (x) { if (x.ref === i.ref) x.qty = Math.max(1, Math.min(6, x.qty + dq)); }); writeCart(cc); render(); });
+            return b; };
+          var q = document.createElement('output'); q.textContent = i.qty; q.setAttribute('aria-label', 'Quantité');
+          var minus = mk('−', 'Retirer un exemplaire de ' + i.name, -1), plus = mk('+', 'Ajouter un exemplaire de ' + i.name, 1);
+          minus.disabled = i.qty <= 1; plus.disabled = i.qty >= 6;
+          st.appendChild(minus); st.appendChild(q); st.appendChild(plus); ctl.appendChild(st);
+        }
+        var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'ci-rm'; rm.textContent = 'Retirer';
+        rm.setAttribute('aria-label', 'Retirer ' + i.name + ' du panier');
+        rm.addEventListener('click', function () { writeCart(readCart().filter(function (x) { return x.ref !== i.ref; })); render(); });
+        ctl.appendChild(rm);
+        var lt = document.createElement('p'); lt.className = 'ci-t'; lt.textContent = eur(du * i.qty);
+        li.appendChild(img); li.appendChild(bd); li.appendChild(ctl); li.appendChild(lt);
+        list.appendChild(li);
+      });
+      S('sub').textContent = eur(L.sub);
+      S('disc').parentNode.hidden = !L.disc;
+      S('disc').textContent = '− ' + eur(L.disc);
+      S('code').textContent = codeOn ? PROMO.code + ' (−' + PROMO.pct + ' %)' : '';
+      S('tot').textContent = eur(L.tot);
+      S('ship').textContent = hasPhysical(c) ? 'Frais de port inclus · Livraison en France métropolitaine' : 'Guide envoyé par e-mail sous 24 heures';
+      retr.hidden = !hasDigital(c);
+      if (retr.hidden) retrBox.checked = false;
+      sync();
+    };
+
+    // Code promo dans le panier
+    var applyCode = function () {
+      if (!inp || !PROMO) return;
+      var v = inp.value.trim().toUpperCase(), deja = v === PROMO.code && LS.get(PKEY);
+      codeOn = v === PROMO.code && !deja;
+      inp.classList.toggle('ok', codeOn);
+      pmsg.className = 'pmsg' + (codeOn ? ' ok' : '');
+      pmsg.textContent = codeOn ? (hasPhysical(readCart()) ? 'Code appliqué : −' + PROMO.pct + ' % sur les créations' : 'Le code s\'applique aux créations, pas aux guides')
+        : deja ? 'Code déjà utilisé : offre limitée à un achat par personne' : (v && v.length >= PROMO.code.length ? 'Code non valide' : '');
+      if (codeOn) LS.set('panier-code', PROMO.code); else if (!v) LS.del('panier-code');
+      render();
+    };
+    if (inp && PROMO) {
+      inp.closest('.promo-f').hidden = false;
+      inp.addEventListener('input', applyCode);
+      if (LS.get('panier-code') === PROMO.code) inp.value = PROMO.code;
+    }
+
+    // Paiement
+    var acts = [], lock = f.querySelector('.pp-lock'), box = f.querySelector('.pp'), wait = f.querySelector('.pp-wait'), fb = f.querySelector('.pp-fallback');
+    function sync() {
+      var o = ready(), c = readCart();
+      lock.textContent = hasDigital(c) ? 'Cochez les deux cases ci-dessus pour payer.' : 'Cochez la case ci-dessus pour payer.';
+      lock.hidden = o; box.classList.toggle('locked', !o); fb.disabled = !o;
       acts.forEach(function (a) { if (o) a.enable(); else a.disable(); });
       if (o) msg.textContent = '';
+    }
+    f.addEventListener('change', sync);
+    var payload = function () {
+      return { items: readCart().map(function (i) { return { ref: i.ref, qty: i.qty }; }), code: codeOn ? PROMO.code : '' };
     };
+    var started = function () { if (codeOn && PKEY) LS.set(PKEY, 'en-cours'); LS.set('panier-envoye', '1'); };
     var post = function (url, data) {
       return fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
         .then(function (r) { return r.json().then(function (d) { d._ok = r.ok; return d; }); });
     };
-    var opts = {
-      style: { shape: 'pill', height: 45 },
-      onInit: function (d, a) { acts.push(a); sync(); },
-      onClick: function () { if (!ok()) msg.textContent = 'Merci de cocher ' + (req.length > 1 ? 'les cases' : 'la case') + ' avant de payer.'; },
-      createOrder: function () {
-        msg.textContent = '';
-        var code = inp && inp.classList.contains('ok') ? inp.value.trim().toUpperCase() : '';
-        if (code && PKEY) { try { localStorage.setItem(PKEY, 'en-cours'); } catch (e) {} }
-        return post('/api/paypal/create', { ref: f.dataset.ref, qty: sel ? sel.value : 1, code: code }).then(function (d) {
-          if (!d._ok || !d.id) throw new Error(d.error || 'commande');
-          return d.id;
-        });
-      },
-      onApprove: function (data, actions) {
-        return post('/api/paypal/capture', { orderID: data.orderID }).then(function (d) {
-          if (d._ok && d.status === 'COMPLETED') { location.href = '/merci?commande=' + encodeURIComponent(d.id); return; }
-          if (d.issue === 'INSTRUMENT_DECLINED') return actions.restart();
-          msg.textContent = "Le paiement n'a pas abouti et rien n'a été débité. Réessayez ou contactez-moi.";
-        });
-      },
-      onCancel: function () {
-        if (PKEY) { try { if (localStorage.getItem(PKEY) === 'en-cours') localStorage.removeItem(PKEY); } catch (e) {} }
-        msg.textContent = 'Paiement annulé : vous pouvez réessayer quand vous voulez.';
-      },
-      onError: function () { msg.textContent = "Le paiement n'a pas pu démarrer. Réessayez dans un instant ou contactez-moi."; }
+
+    // Repli si les boutons modernes ne se chargent pas : panier PayPal classique (plusieurs articles)
+    var fallback = function () {
+      wait.hidden = true; box.hidden = true; fb.hidden = false; sync();
     };
-    var n = 0;
-    [paypal.FUNDING.PAYPAL, paypal.FUNDING.CARD].forEach(function (src) {
-      var o = {}; for (var k in opts) o[k] = opts[k]; o.fundingSource = src;
-      var b = paypal.Buttons(o);
-      if (b.isEligible()) { var d = document.createElement('div'); d.className = 'pp-b'; slot.appendChild(d); b.render(d); n++; }
+    fb.addEventListener('click', function () {
+      if (!ready()) { msg.textContent = 'Merci de cocher les cases avant de payer.'; return; }
+      var L = lines(), fm = document.createElement('form');
+      fm.method = 'post'; fm.action = 'https://www.paypal.com/cgi-bin/webscr';
+      var add = function (n, v) { var x = document.createElement('input'); x.type = 'hidden'; x.name = n; x.value = v; fm.appendChild(x); };
+      add('cmd', '_cart'); add('upload', '1'); add('business', cartEl.dataset.business); add('currency_code', 'EUR'); add('lc', 'FR'); add('charset', 'utf-8');
+      add('return', cartEl.dataset.return); add('cancel_return', cartEl.dataset.cancel); add('no_shipping', hasPhysical(L.c) ? '2' : '1');
+      L.c.forEach(function (i, k) {
+        var u = cents(i.price); if (codeOn && !i.digital) u = Math.round(u * (100 - PROMO.pct) / 100);
+        add('item_name_' + (k + 1), i.name + (codeOn && !i.digital ? ' · code ' + PROMO.code + ' (-' + PROMO.pct + ' %)' : ''));
+        add('item_number_' + (k + 1), i.ref); add('amount_' + (k + 1), (u / 100).toFixed(2)); add('quantity_' + (k + 1), i.qty);
+      });
+      document.body.appendChild(fm); started(); fm.submit();
     });
-    if (n) { box.hidden = false; sub.hidden = true; req.forEach(function (c) { c.addEventListener('change', sync); }); sync(); }
+
+    var setup = function () {
+      if (!window.paypal || !paypal.Buttons) return fallback();
+      var slot = box.querySelector('.pp-btns'), n = 0;
+      var opts = {
+        style: { shape: 'pill', height: 48 },
+        onInit: function (d, a) { acts.push(a); sync(); },
+        onClick: function () { if (!ready()) msg.textContent = 'Merci de cocher ' + (hasDigital(readCart()) ? 'les deux cases' : 'la case') + ' avant de payer.'; },
+        createOrder: function () {
+          msg.textContent = ''; started();
+          return post('/api/paypal/create', payload()).then(function (d) {
+            if (!d._ok || !d.id) throw new Error(d.error || 'commande');
+            return d.id;
+          });
+        },
+        onApprove: function (data, actions) {
+          return post('/api/paypal/capture', { orderID: data.orderID }).then(function (d) {
+            if (d._ok && d.status === 'COMPLETED') { location.href = '/merci?commande=' + encodeURIComponent(d.id); return; }
+            if (d.issue === 'INSTRUMENT_DECLINED') return actions.restart();
+            msg.textContent = "Le paiement n'a pas abouti et rien n'a été débité. Réessayez ou contactez-moi.";
+          });
+        },
+        onCancel: function () {
+          if (PKEY && LS.get(PKEY) === 'en-cours') LS.del(PKEY);
+          LS.del('panier-envoye');
+          msg.textContent = 'Paiement annulé : votre panier est conservé.';
+        },
+        onError: function () { LS.del('panier-envoye'); msg.textContent = "Le paiement n'a pas pu démarrer. Réessayez dans un instant ou contactez-moi."; }
+      };
+      [paypal.FUNDING.PAYPAL, paypal.FUNDING.CARD].forEach(function (src) {
+        var o = {}; for (var k in opts) o[k] = opts[k]; o.fundingSource = src;
+        var b = paypal.Buttons(o);
+        if (b.isEligible()) { var d = document.createElement('div'); d.className = 'pp-b'; slot.appendChild(d); b.render(d); n++; }
+      });
+      if (!n) return fallback();
+      wait.hidden = true; sync();
+    };
+
+    clean();
+    if (inp && PROMO && inp.value) applyCode(); else render();
+
+    if (readCart().length && window.fetch) {
+      var to = setTimeout(fallback, 12000);
+      fetch('/api/paypal/config').then(function (r) { return r.ok ? r.json() : Promise.reject(); }).then(function (c) {
+        if (!c || !c.clientId) throw new Error();
+        var sdk = document.createElement('script');
+        sdk.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(c.clientId) + '&currency=EUR&locale=fr_FR&components=buttons&enable-funding=card';
+        sdk.onload = function () { clearTimeout(to); setup(); };
+        sdk.onerror = function () { clearTimeout(to); fallback(); };
+        document.head.appendChild(sdk);
+      }).catch(function () { clearTimeout(to); fallback(); });
+    } else if (readCart().length) fallback();
   }
 
   // Année du pied de page

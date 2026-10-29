@@ -21,7 +21,7 @@
 <link rel="icon" href="/favicon.png" type="image/png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preload" href="/assets/fonts/dancing-script-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/style.css?v=23">
+<link rel="stylesheet" href="/assets/style.css?v=24">
 </head>
 <body>
 <a class="skip" href="#contenu">Aller au contenu</a>
@@ -51,6 +51,7 @@
 <a href="/contact">Contact</a>
 <a class="shop" href="/boutique">Boutique</a>
 </nav>
+<a class="cartl" href="/panier" aria-label="Mon panier"><svg class="" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 13H6zM9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="cnt" hidden>0</span></a>
 </div>
 <div class="ptitle"><h1>Les guides</h1><p>Préparez votre séjour en Bretagne avec des itinéraires, des adresses et des conseils pratiques.</p></div>
 </header>
@@ -58,7 +59,7 @@
 <section class="sec"><div class="sw wide">
 <p class="sub">Des guides numériques en PDF, à lire sur téléphone ou à imprimer</p>
 <ol class="steps">
-<li>Choisissez votre guide et payez en toute sécurité avec PayPal (carte bancaire acceptée sans compte PayPal).</li>
+<li>Ajoutez votre guide au panier, avec des créations si vous le souhaitez, et payez en toute sécurité par PayPal ou carte bancaire, sans compte PayPal.</li>
 <li>Vous recevez votre guide en PDF par e-mail, sous 24 heures au plus tard.</li>
 <li>Emportez-le partout : il fonctionne même sans connexion.</li>
 </ol>
@@ -74,24 +75,11 @@
 <details class="specs"><summary>Caractéristiques</summary><ul><li>Guide numérique au format PDF, 60 pages</li><li>À lire sur téléphone, tablette ou ordinateur, ou à imprimer (format A4)</li><li>Fonctionne sans connexion une fois téléchargé</li><li>Sommaire cliquable</li><li>Envoyé par e-mail sous 24 heures au plus tard</li></ul></details>
 <p class="price">9,90 €<small></small> </p>
 
-<form data-pay data-ref="G-FIN" data-digital action="https://www.paypal.com/cgi-bin/webscr" method="post">
-<input type="hidden" name="cmd" value="_xclick">
-<input type="hidden" name="business" value="ancredarmor@gmail.com">
-<input type="hidden" name="item_name" value="Guide « Le Finistère »">
-<input type="hidden" name="item_number" value="G-FIN">
-<input type="hidden" name="amount" value="9.90">
-<input type="hidden" name="currency_code" value="EUR">
-<input type="hidden" name="lc" value="FR">
-<input type="hidden" name="charset" value="utf-8">
-<input type="hidden" name="return" value="https://ancre-darmor.fr/merci">
-<input type="hidden" name="cancel_return" value="https://ancre-darmor.fr/guides">
-<input type="hidden" name="no_shipping" value="1">
-<label class="chk"><input type="checkbox" data-required> Je demande à recevoir le guide immédiatement et je renonce à mon droit de rétractation dès son envoi.</label>
-<label class="chk"><input type="checkbox" data-required> J'accepte les <a href="/cgv">conditions générales de vente</a>.</label>
-<button class="btn" type="submit" disabled>Payer avec PayPal</button>
-<div class="pp" hidden><p class="pp-lock">Cochez les cases ci-dessus pour payer.</p><div class="pp-btns" id="pp-G-FIN"></div></div>
-<p class="pp-msg" role="alert" aria-live="assertive"></p>
-</form>
+<div class="buy" data-ref="G-FIN" data-name="Guide « Le Finistère »" data-price="9.90" data-img="/images/guide-finistere.webp" data-url="/guides" data-digital>
+
+<button class="btn addc" type="button"><svg class="" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 13H6zM9 8V6a3 3 0 0 1 6 0v2"/></svg>Ajouter au panier</button>
+<p class="added" role="status" aria-live="polite"></p>
+</div>
 </div></article>
 </div>
 <p class="note mt">D'autres guides arrivent bientôt : Côtes-d'Armor, Morbihan, Ille-et-Vilaine et Loire-Atlantique. Une question avant d'acheter ? <a href="/contact?objet=Question%20sur%20un%20guide">Écrivez-moi</a>, je réponds avec plaisir.</p>
@@ -105,6 +93,6 @@
 </div>
 <p class="copy">© <span id="y">2026</span> Ancre d'Armor · Avec amour pour la Bretagne<span class="credit">Site réalisé par <a href="https://tamonlink.fr" target="_blank" rel="noopener">tamonlink.fr</a></span></p>
 </footer>
-<script src="/assets/site.js?v=23" defer></script>
+<script src="/assets/site.js?v=24" defer></script>
 </body>
 </html>
