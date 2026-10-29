@@ -530,3 +530,14 @@ form[data-pay] button[type=submit][hidden]{display:none}
  .bar .tog{padding:8px 14px}
 }
 @media (max-width:380px){.logo span{font-size:.9rem;letter-spacing:.06em}}
+
+/* Animation d'ajout au panier */
+.fly{position:fixed;left:0;top:0;z-index:60;pointer-events:none;will-change:transform}
+.fly-i{width:64px;height:64px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px #e8c88c,0 8px 22px rgba(20,30,52,.35);overflow:hidden;will-change:transform,opacity}
+.fly-i img{width:100%;height:100%;object-fit:contain;display:block}
+.spark{position:fixed;left:-4px;top:-4px;width:8px;height:8px;border-radius:50%;background:#e8c88c;z-index:61;pointer-events:none;box-shadow:0 0 6px rgba(232,200,140,.9)}
+.fcart{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:55;display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:#16254a;color:#fff;box-shadow:0 0 0 3px #e8c88c,0 10px 26px rgba(20,30,52,.35);transform:translateY(120px);opacity:0;transition:transform .35s cubic-bezier(.2,.8,.2,1.2),opacity .25s}
+.fcart.on{transform:none;opacity:1}
+.fcart svg{width:24px;height:24px;fill:none;stroke:#e8c88c;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.fcart .cnt{position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;padding:0 5px;border-radius:999px;background:#e8c88c;color:#16254a;font:800 .75rem/22px Nunito,sans-serif;text-align:center;box-shadow:0 0 0 2px #16254a}
+.fcart.bump{animation:cbump .5s ease}

@@ -95,6 +95,66 @@ document.addEventListener('DOMContentLoaded', function () {
     if (LS.get('panier-envoye')) { LS.del('panier-envoye'); LS.del('panier-code'); writeCart([]); }
   }
 
+  // Animation : la vignette du produit s'envole en arc jusqu'au panier
+  var fcart = null, fcartT;
+  var floatCart = function () {
+    if (!fcart) {
+      fcart = document.createElement('a'); fcart.href = '/panier'; fcart.className = 'fcart';
+      fcart.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 13H6zM9 8V6a3 3 0 0 1 6 0v2"/></svg><span class="cnt"></span>';
+      document.body.appendChild(fcart);
+    }
+    var n = count(readCart()), c = fcart.querySelector('.cnt');
+    c.textContent = n; fcart.setAttribute('aria-label', 'Mon panier : ' + n + ' article' + (n > 1 ? 's' : ''));
+    fcart.classList.add('on'); clearTimeout(fcartT);
+    fcartT = setTimeout(function () { fcart.classList.remove('on'); }, 4500);
+    return fcart;
+  };
+  var bumpCart = function (el) {
+    [el].concat([].slice.call(document.querySelectorAll('.cartl'))).forEach(function (l) {
+      if (!l) return; l.classList.remove('bump'); void l.offsetWidth; l.classList.add('bump');
+    });
+  };
+  function flyToCart(buyEl, imgSrc) {
+    var head = document.querySelector('.cartl'), hr = head && head.getBoundingClientRect();
+    var visible = hr && hr.bottom > 0 && hr.top < innerHeight;
+    var target = visible ? head : floatCart();
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || !document.body.animate) { bumpCart(target); return; }
+    var card = buyEl.closest('.card'), src = card && card.querySelector('.pimg img');
+    var ir = src && src.getBoundingClientRect();
+    var useImg = ir && ir.top > 0 && ir.top + Math.min(ir.height, 260) / 2 < innerHeight - 40;
+    var from = (useImg ? src : buyEl.querySelector('.addc')).getBoundingClientRect();
+    var to = target.getBoundingClientRect();
+    var size = 64;
+    var x0 = from.left + from.width / 2 - size / 2, y0 = from.top + Math.min(from.height, 260) / 2 - size / 2;
+    if (!useImg) { y0 = from.top - size / 2 - 6; }
+    var x1 = to.left + to.width / 2 - size / 2, y1 = to.top + to.height / 2 - size / 2;
+    var outer = document.createElement('div'), inner = document.createElement('div'), im = document.createElement('img');
+    outer.className = 'fly'; inner.className = 'fly-i'; im.src = (src && src.currentSrc) || imgSrc; im.alt = '';
+    inner.appendChild(im); outer.appendChild(inner); document.body.appendChild(outer);
+    var dur = Math.min(950, Math.max(650, Math.hypot(x1 - x0, y1 - y0) * 0.9));
+    // Horizontal régulier + vertical qui monte puis plonge = trajectoire en arc
+    outer.animate([{ transform: 'translateX(' + x0 + 'px)' }, { transform: 'translateX(' + x1 + 'px)' }], { duration: dur, easing: 'cubic-bezier(.3,0,.6,1)', fill: 'forwards' });
+    var lift = Math.min(140, Math.abs(y1 - y0) * 0.35 + 60);
+    var a = inner.animate([
+      { transform: 'translateY(' + y0 + 'px) scale(.6) rotate(0deg)', opacity: 0 },
+      { transform: 'translateY(' + (y0 - lift) + 'px) scale(1.05) rotate(-8deg)', opacity: 1, offset: 0.3 },
+      { transform: 'translateY(' + y1 + 'px) scale(.28) rotate(12deg)', opacity: .85 }
+    ], { duration: dur, easing: 'cubic-bezier(.45,0,.75,.6)', fill: 'forwards' });
+    a.onfinish = function () { outer.remove(); bumpCart(target); sparkle(target); };
+  }
+  var sparkle = function (el) {
+    var r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    for (var i = 0; i < 6; i++) {
+      var d = document.createElement('i'); d.className = 'spark'; document.body.appendChild(d);
+      var ang = i / 6 * Math.PI * 2, dist = 22 + Math.random() * 10;
+      d.animate([
+        { transform: 'translate(' + cx + 'px,' + cy + 'px) scale(1)', opacity: 1 },
+        { transform: 'translate(' + (cx + Math.cos(ang) * dist) + 'px,' + (cy + Math.sin(ang) * dist) + 'px) scale(.2)', opacity: 0 }
+      ], { duration: 520, easing: 'ease-out', fill: 'forwards' }).onfinish = (function (x) { return function () { x.remove(); }; })(d);
+    }
+  };
+
   // Boutons « Ajouter au panier »
   document.querySelectorAll('.buy').forEach(function (b) {
     var btn = b.querySelector('.addc'), sel = b.querySelector('select'), out = b.querySelector('.added'), tmo;
@@ -109,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
       var a = document.createElement('a'); a.href = '/panier'; a.textContent = 'Voir le panier →';
       out.appendChild(t); out.appendChild(a); out.classList.add('on');
       btn.classList.remove('pop'); void btn.offsetWidth; btn.classList.add('pop');
-      document.querySelectorAll('.cartl').forEach(function (l) { l.classList.remove('bump'); void l.offsetWidth; l.classList.add('bump'); });
+      flyToCart(b, d.img);
       clearTimeout(tmo); tmo = setTimeout(function () { out.classList.remove('on'); }, 6000);
     });
   });
