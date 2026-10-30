@@ -27,6 +27,11 @@ const CATALOG = {
   "name": "Guide « Le Finistère »",
   "price": "9.90",
   "digital": true
+ },
+ "G-CDA": {
+  "name": "Guide « Les Côtes-d'Armor »",
+  "price": "9.90",
+  "digital": true
  }
 };
 const PROMO = {"code": "BREIZH15", "pct": 15, "end": "2026-11-17T23:59:59+01:00"};
